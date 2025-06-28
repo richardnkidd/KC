@@ -120,6 +120,13 @@
     @apply border-border;
   }
 
+  html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    touch-action: pan-y; /* Allow vertical scrolling */
+  }
+
   body {
     @apply font-sans antialiased;
     font-family: 'Outfit', sans-serif;
@@ -130,19 +137,35 @@
       var(--background-end) 100%
     );
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
     background-attachment: fixed;
     color: var(--foreground);
     position: relative;
+    overflow-x: hidden;
   }
 
-  /* Subtle pattern overlay */
+  /* Mobile-specific fixes */
+  @media (max-width: 768px) {
+    body {
+      background-attachment: scroll; /* Fixed backgrounds cause lag on mobile */
+    }
+    
+    /* Ensure smooth scrolling on mobile */
+    #root {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+  }
+
+  /* Subtle pattern overlay - absolute on mobile to prevent scroll issues */
   body::before {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    min-height: 100vh;
     background-image: 
       radial-gradient(circle at 20% 50%, rgba(var(--tropical-ocean), 0.02) 0%, transparent 50%),
       radial-gradient(circle at 80% 50%, rgba(var(--tropical-sage), 0.02) 0%, transparent 50%),
@@ -153,19 +176,28 @@
     z-index: 1;
   }
 
-  /* Subtle texture overlay */
+  /* Subtle texture overlay - absolute on mobile */
   body::after {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    min-height: 100vh;
     background-image: 
       url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.01'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     opacity: 0.3;
     pointer-events: none;
     z-index: 1;
+  }
+  
+  /* Use fixed positioning only on desktop */
+  @media (min-width: 769px) {
+    body::before,
+    body::after {
+      position: fixed;
+    }
   }
 
   /* Content above pattern */
@@ -335,6 +367,7 @@
   @media (max-width: 768px) {
     .site-header {
       background: rgba(255, 255, 255, 0.95);
+      position: relative !important; /* Disable sticky on mobile */
     }
     
     .header-logo {
