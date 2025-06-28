@@ -6,6 +6,7 @@ import { getTidesData } from "./services/tidesService";
 import { getMoviesData } from "./services/moviesService";
 import { getEventsData } from "./services/eventsService";
 import { getSunData } from "./services/sunService";
+import { getTrafficData } from "./services/trafficService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Add proper MIME type handling for JS modules
@@ -81,6 +82,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Sun API error:', error);
       res.status(500).json({ 
         error: 'Failed to fetch sun data',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Traffic endpoint
+  app.get("/api/traffic", async (req, res) => {
+    try {
+      const trafficData = await getTrafficData();
+      res.json(trafficData);
+    } catch (error) {
+      console.error('Traffic API error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch traffic data',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

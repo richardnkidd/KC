@@ -114,3 +114,33 @@ export interface SunData {
   };
   lastUpdated: string;
 }
+
+// Traffic data types
+export interface TrafficData {
+  routes: Array<{
+    name: string;
+    from: string;
+    to: string;
+    normalTime: number;
+    currentTime: number;
+    delay: number;
+    status: 'clear' | 'moderate' | 'heavy' | 'severe';
+    incidents: Array<{
+      type: 'accident' | 'construction' | 'event' | 'weather';
+      description: string;
+      location: string;
+    }>;
+  }>;
+  alerts: Array<{
+    type: 'closure' | 'warning' | 'info';
+    title: string;
+    description: string;
+    roads: string[];
+  }>;
+  zipperLane: {
+    active: boolean;
+    direction: string;
+    hours: string;
+  };
+  lastUpdated: string;
+}

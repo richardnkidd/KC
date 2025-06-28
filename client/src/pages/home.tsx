@@ -6,6 +6,7 @@ import { TideCard } from '../components/TideCard';
 import { MoviesCard } from '../components/MoviesCard';
 import { EventsCard } from '../components/EventsCard';
 import { SunCard } from '../components/SunCard';
+import { TrafficCard } from '../components/TrafficCard';
 import { mutate } from 'swr';
 import { useToast } from '../hooks/use-toast';
 
@@ -65,6 +66,7 @@ export default function Home() {
         mutate('/api/events'),
         mutate('/api/surf?lat=21.276&lng=-157.822'),
         mutate('/api/sun'),
+        mutate('/api/traffic'),
       ]);
       setLastUpdated('Just now');
       toast({
@@ -177,6 +179,9 @@ export default function Home() {
           </div>
           <div className="tropical-card sun-card animate-fade-in" style={{ animationDelay: '0.25s' }}>
             <SunCard />
+          </div>
+          <div className="tropical-card traffic-card animate-fade-in" style={{ animationDelay: '0.35s' }}>
+            <TrafficCard />
           </div>
           <div className="tropical-card movies-card animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <MoviesCard />
