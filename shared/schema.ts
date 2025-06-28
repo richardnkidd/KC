@@ -28,6 +28,13 @@ export interface WeatherData {
     pressure: string;
     icon: string;
   };
+  hourly: Array<{
+    time: string;
+    hour: string;
+    temp: number;
+    icon: string;
+    condition: string;
+  }>;
   forecast: Array<{
     date: string;
     day: string;

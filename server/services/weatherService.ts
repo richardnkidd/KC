@@ -35,7 +35,24 @@ export async function getWeatherData(): Promise<WeatherData> {
 
     const forecastData = await forecastResponse.json();
 
-    // Process forecast data to get daily forecasts
+    // Process hourly data - get next 8 hours
+    const hourlyForecasts = forecastData.list
+      .slice(0, 8)
+      .map((item: any) => {
+        const date = new Date(item.dt * 1000);
+        const hour = date.getHours();
+        const displayHour = hour === 0 ? '12AM' : hour < 12 ? `${hour}AM` : hour === 12 ? '12PM' : `${hour - 12}PM`;
+        
+        return {
+          time: date.toISOString(),
+          hour: displayHour,
+          temp: Math.round(item.main.temp),
+          icon: item.weather[0].icon,
+          condition: item.weather[0].main,
+        };
+      });
+
+    // Process daily forecasts
     const dailyForecasts = forecastData.list
       .filter((_: any, index: number) => index % 8 === 0) // Every 8th item (24 hours apart)
       .slice(0, 3)
@@ -64,6 +81,7 @@ export async function getWeatherData(): Promise<WeatherData> {
         pressure: `${(currentData.main.pressure * 0.02953).toFixed(2)} in`,
         icon: currentData.weather[0].icon,
       },
+      hourly: hourlyForecasts,
       forecast: dailyForecasts,
       lastUpdated: new Date().toISOString(),
     };
