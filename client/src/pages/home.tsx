@@ -83,9 +83,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
-      {/* Decorative wave patterns */}
-      <div className="fixed inset-0 pointer-events-none">
+    <div className="relative">
+      {/* Decorative wave patterns - absolute on mobile */}
+      <div className="absolute lg:fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-64 opacity-5">
           <svg viewBox="0 0 1440 320" className="w-full h-full">
             <path fill="currentColor" d="M0,128L48,138.7C96,149,192,171,288,165.3C384,160,480,128,576,128C672,128,768,160,864,165.3C960,171,1056,149,1152,138.7C1248,128,1344,128,1392,128L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
@@ -94,7 +94,7 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <header className="site-header sticky lg:sticky top-0" style={{ zIndex: 'var(--z-header)' }}>
+      <header className="site-header lg:sticky lg:top-0" style={{ zIndex: 'var(--z-header)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 relative">
             <div className="flex items-center space-x-4">
@@ -163,8 +163,8 @@ export default function Home() {
       </header>
 
       {/* Main Dashboard */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative overflow-visible">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-0">
           {/* Add color-coded card classes */}
           <div className="tropical-card weather-card animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <WeatherCard />
@@ -186,9 +186,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Decorative elements */}
-        <div className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full bg-gradient-to-br from-[#214263]/10 to-transparent blur-3xl"></div>
-        <div className="absolute -top-20 -left-20 w-60 h-60 rounded-full bg-gradient-to-br from-[#435443]/10 to-transparent blur-3xl"></div>
+        {/* Decorative elements - hidden on mobile to prevent scrolling issues */}
+        <div className="hidden lg:block absolute -bottom-20 -right-20 w-40 h-40 rounded-full bg-gradient-to-br from-[#214263]/10 to-transparent blur-3xl pointer-events-none"></div>
+        <div className="hidden lg:block absolute -top-20 -left-20 w-60 h-60 rounded-full bg-gradient-to-br from-[#435443]/10 to-transparent blur-3xl pointer-events-none"></div>
       </main>
 
       {/* Offline Indicator */}
