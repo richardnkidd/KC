@@ -87,11 +87,24 @@ export async function getEventsData(): Promise<EventData> {
 
 function getFallbackEvents(): EventData {
   const today = new Date();
+  const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 
+                     'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  
+  // Generate future dates starting from tomorrow
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
+  const in3Days = new Date(today);
+  in3Days.setDate(in3Days.getDate() + 3);
+  
+  const in5Days = new Date(today);
+  in5Days.setDate(in5Days.getDate() + 5);
+  
   const events = [
     {
       title: "Honolulu Night Market",
-      date: "JUN 15",
-      day: "15",
+      date: `${monthNames[tomorrow.getMonth()]} ${tomorrow.getDate()}`,
+      day: tomorrow.getDate().toString(),
       time: "5:00 PM - 10:00 PM",
       venue: "Kakaako Waterfront Park",
       description: "Local vendors, food trucks, and live music",
@@ -100,8 +113,8 @@ function getFallbackEvents(): EventData {
     },
     {
       title: "Sunset Beach Concert Series",
-      date: "JUN 17",
-      day: "17",
+      date: `${monthNames[in3Days.getMonth()]} ${in3Days.getDate()}`,
+      day: in3Days.getDate().toString(),
       time: "7:00 PM - 9:00 PM",
       venue: "Waikiki Beach",
       description: "Jazz fusion band featuring local artists",
@@ -110,8 +123,8 @@ function getFallbackEvents(): EventData {
     },
     {
       title: "Hawaiian Cultural Festival",
-      date: "JUN 20",
-      day: "20",
+      date: `${monthNames[in5Days.getMonth()]} ${in5Days.getDate()}`,
+      day: in5Days.getDate().toString(),
       time: "10:00 AM - 6:00 PM",
       venue: "Iolani Palace",
       description: "Traditional performances, crafts, and food",

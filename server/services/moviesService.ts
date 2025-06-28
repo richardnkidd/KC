@@ -50,24 +50,24 @@ export async function getMoviesData(): Promise<MovieData> {
     if (movies.length === 0) {
       movies.push(
         {
-          title: "Guardians of the Galaxy Vol. 3",
+          title: "Dune: Part Three",
           rating: "PG-13",
-          duration: "2h 30m",
-          genre: "Action",
+          duration: "2h 45m",
+          genre: "Sci-Fi",
           times: ["2:00 PM", "5:30 PM", "8:45 PM"]
         },
         {
-          title: "The Little Mermaid",
+          title: "Moana 2",
           rating: "PG",
-          duration: "2h 15m",
-          genre: "Musical",
+          duration: "1h 55m",
+          genre: "Animation",
           times: ["12:15 PM", "3:30 PM", "6:45 PM", "9:50 PM"]
         },
         {
-          title: "Spider-Man: Across the Spider-Verse",
+          title: "Avatar: Fire and Ash",
           rating: "PG-13",
-          duration: "2h 20m",
-          genre: "Animation",
+          duration: "3h 10m",
+          genre: "Adventure",
           times: ["1:30 PM", "4:45 PM", "7:20 PM", "10:15 PM"]
         }
       );
@@ -86,24 +86,24 @@ export async function getMoviesData(): Promise<MovieData> {
     return {
       showtimes: [
         {
-          title: "Guardians of the Galaxy Vol. 3",
+          title: "Dune: Part Three",
           rating: "PG-13",
-          duration: "2h 30m",
-          genre: "Action",
+          duration: "2h 45m",
+          genre: "Sci-Fi",
           times: ["2:00 PM", "5:30 PM", "8:45 PM"]
         },
         {
-          title: "The Little Mermaid",
+          title: "Moana 2",
           rating: "PG",
-          duration: "2h 15m",
-          genre: "Musical",
+          duration: "1h 55m",
+          genre: "Animation",
           times: ["12:15 PM", "3:30 PM", "6:45 PM", "9:50 PM"]
         },
         {
-          title: "Spider-Man: Across the Spider-Verse",
+          title: "Avatar: Fire and Ash",
           rating: "PG-13",
-          duration: "2h 20m",
-          genre: "Animation",
+          duration: "3h 10m",
+          genre: "Adventure",
           times: ["1:30 PM", "4:45 PM", "7:20 PM", "10:15 PM"]
         }
       ],
