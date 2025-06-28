@@ -159,14 +159,6 @@ Changelog:
   - Changed from dark deep-green→ocean gradient to light mist→sand gradient
   - Background now uses: linear-gradient(180deg, var(--tropical-mist) 0%, var(--tropical-sand) 100%)
   - Creates a lighter aesthetic transitioning from off-white (#F5F3F0) to light tan (#EADDCA)
-- June 28, 2025: Implemented comprehensive light theme color system
-  - Updated color palette: Mist (245,250,248), Sand (238,224,201), Stone (51,51,51)
-  - Converted background to CSS variable with gradient: mist→sand
-  - Updated all cards to light theme with 95-98% mist background
-  - Changed text colors: primary uses stone color, secondary/muted use stone with opacity
-  - Updated glass effects for light theme with subtle shadows
-  - Added dark mode support with dark gradient background
-  - Removed text shadows for cleaner light theme appearance
 ```
 
 ## User Preferences
