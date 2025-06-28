@@ -88,3 +88,29 @@ export interface EventData {
   }>;
   lastUpdated: string;
 }
+
+// Sunrise/Sunset data types
+export interface SunData {
+  sunrise: {
+    time: string;
+    formatted: string;
+  };
+  sunset: {
+    time: string;
+    formatted: string;
+  };
+  solarNoon: {
+    time: string;
+    formatted: string;
+  };
+  dayLength: string;
+  goldenHour: {
+    morning: string;
+    evening: string;
+  };
+  blueHour: {
+    morning: string;
+    evening: string;
+  };
+  lastUpdated: string;
+}
