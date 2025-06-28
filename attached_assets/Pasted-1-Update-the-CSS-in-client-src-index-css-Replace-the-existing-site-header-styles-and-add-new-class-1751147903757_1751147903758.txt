@@ -1,0 +1,168 @@
+1. Update the CSS in client/src/index.css
+Replace the existing .site-header styles and add new classes:
+css/* Site header with glass morphism effect */
+.site-header {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 
+              0 2px 12px rgba(0, 0, 0, 0.04);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Header pattern overlay */
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 50c10-5 20-5 30 0s20 5 30 0 20-5 30 0 20 5 30 0' stroke='%23407B9E' stroke-width='0.5' fill='none' opacity='0.1'/%3E%3C/svg%3E");
+  background-size: 100px 100px;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Remove the old header logo override */
+/* Delete this block:
+.site-header .w-12.h-12 {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+*/
+
+/* Header logo container */
+.header-logo {
+  width: 56px;
+  height: 56px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.header-logo:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: scale(1.05);
+}
+
+/* Status badge */
+.status-badge {
+  background: #F5FAF8;
+  border: 1px solid rgba(238, 224, 201, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+/* Header button */
+.header-button {
+  background: white;
+  border: 1px solid rgba(238, 224, 201, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.header-button:hover {
+  background: #F5FAF8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.header-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .site-header {
+    background: rgba(255, 255, 255, 0.95);
+  }
+  
+  .header-logo {
+    width: 48px;
+    height: 48px;
+  }
+}
+2. Update the header section in client/src/pages/home.tsx
+Replace the entire header section with this updated code:
+tsx{/* Header */}
+<header className="site-header sticky top-0" style={{ zIndex: 'var(--z-header)' }}>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-between h-20 relative">
+      <div className="flex items-center space-x-4">
+        <div className="relative group">
+          <div className="header-logo rounded-2xl flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#407B9E]/10 to-[#214263]/5"></div>
+            <Waves className="w-7 h-7 text-[#214263] relative z-10 animate-wave" />
+          </div>
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#407B9E]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+        </div>
+        <div>
+          <h1 className="text-2xl font-display font-bold text-[#333333]">
+            Kamaʻāina Compass
+          </h1>
+          <p className="text-sm text-[#333333]/70 font-light hidden sm:block">
+            Real-time island rhythms
+          </p>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-3">
+        {/* Status indicator */}
+        <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full status-badge">
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+          <span className="text-xs text-[#333333]/60">
+            Updated {lastUpdated}
+          </span>
+        </div>
+        
+        {/* Refresh button */}
+        <button 
+          className="relative group p-3 rounded-xl header-button"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+        >
+          <RefreshCw className={`w-5 h-5 text-[#214263] ${
+            isRefreshing 
+              ? 'animate-spin' 
+              : 'group-hover:rotate-180 transition-transform duration-500'
+          }`} />
+          <span className="sr-only">Refresh data</span>
+          
+          {/* Ripple effect on click */}
+          <span className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+            <span className="absolute inset-0 bg-[#407B9E]/10 scale-0 group-active:scale-100 transition-transform duration-300 rounded-xl"></span>
+          </span>
+        </button>
+        
+        {/* Optional: Menu button for mobile */}
+        <button className="p-3 rounded-xl header-button lg:hidden">
+          <Palmtree className="w-5 h-5 text-[#214263]" />
+          <span className="sr-only">Menu</span>
+        </button>
+      </div>
+    </div>
+    
+    {/* Optional: Navigation breadcrumbs for future expansion */}
+    {/* <nav className="hidden lg:flex items-center gap-6 text-sm pb-4 -mt-2">
+      <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Dashboard</a>
+      <span className="text-[#333333]/30">•</span>
+      <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Surf Report</a>
+      <span className="text-[#333333]/30">•</span>
+      <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Island Events</a>
+    </nav> */}
+  </div>
+</header>
+3. Update the imports in client/src/pages/home.tsx
+Make sure you have all the necessary imports at the top of the file:
+tsximport React, { useState, useEffect } from 'react';
+import { Waves, RefreshCw, WifiOff, Palmtree, Menu } from 'lucide-react';
+import { WeatherCard } from '../components/WeatherCard';
+import SurfCard from '@/components/cards/SurfCard';
+import { TideCard } from '../components/TideCard';
+import { MoviesCard } from '../components/MoviesCard';
+import { EventsCard } from '../components/EventsCard';
+import { mutate } from 'swr';
+import { useToast } from '../hooks/use-toast';

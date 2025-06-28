@@ -92,34 +92,71 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <header className="site-header sticky top-0 border-b border-white/10" style={{ zIndex: 'var(--z-header)' }}>
+      <header className="site-header sticky top-0" style={{ zIndex: 'var(--z-header)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-20 relative">
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#214263] to-[#407B9E] opacity-90"></div>
-                  <Waves className="w-6 h-6 text-white relative z-10 animate-wave" />
+              <div className="relative group">
+                <div className="header-logo rounded-2xl flex items-center justify-center overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#407B9E]/10 to-[#214263]/5"></div>
+                  <Waves className="w-7 h-7 text-[#214263] relative z-10 animate-wave" />
                 </div>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#407B9E]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
               <div>
-                <h1 className="text-h1 font-display gradient-text">Kamaʻāina Compass</h1>
-                <p className="text-small text-secondary">Real-time island rhythms</p>
+                <h1 className="text-2xl font-display font-bold text-[#333333]">
+                  Kamaʻāina Compass
+                </h1>
+                <p className="text-sm text-[#333333]/70 font-light hidden sm:block">
+                  Real-time island rhythms
+                </p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-small text-secondary hidden sm:inline">
-                Updated {lastUpdated}
-              </span>
+            
+            <div className="flex items-center gap-3">
+              {/* Status indicator */}
+              <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full status-badge">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span className="text-xs text-[#333333]/60">
+                  Updated {lastUpdated}
+                </span>
+              </div>
+              
+              {/* Refresh button */}
               <button 
-                className="tropical-button p-3 !px-4"
+                className="relative group p-3 rounded-xl header-button"
                 onClick={handleRefresh}
                 disabled={isRefreshing}
               >
-                <RefreshCw className={`w-5 h-5 relative z-10 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-5 h-5 text-[#214263] ${
+                  isRefreshing 
+                    ? 'animate-spin' 
+                    : 'group-hover:rotate-180 transition-transform duration-500'
+                }`} />
+                <span className="sr-only">Refresh data</span>
+                
+                {/* Ripple effect on click */}
+                <span className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+                  <span className="absolute inset-0 bg-[#407B9E]/10 scale-0 group-active:scale-100 transition-transform duration-300 rounded-xl"></span>
+                </span>
+              </button>
+              
+              {/* Optional: Menu button for mobile */}
+              <button className="p-3 rounded-xl header-button lg:hidden">
+                <Palmtree className="w-5 h-5 text-[#214263]" />
+                <span className="sr-only">Menu</span>
               </button>
             </div>
           </div>
+          
+          {/* Optional: Navigation breadcrumbs for future expansion */}
+          {/* <nav className="hidden lg:flex items-center gap-6 text-sm pb-4 -mt-2">
+            <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Dashboard</a>
+            <span className="text-[#333333]/30">•</span>
+            <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Surf Report</a>
+            <span className="text-[#333333]/30">•</span>
+            <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Island Events</a>
+          </nav> */}
         </div>
       </header>
 
