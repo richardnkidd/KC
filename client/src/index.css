@@ -5,37 +5,47 @@
 @tailwind utilities;
 
 :root {
-  /* Kamaʻāina Compass Design System - Exact Specification Colors */
+  /* Tropical color palette */
+  --tropical-mist: 245, 250, 248;      /* Light off-white/mist */
+  --tropical-sand: 238, 224, 201;      /* Warm sand color */
+  --tropical-stone: 51, 51, 51;        /* Dark text color */
+  
+  /* Kamaʻāina Compass Design System - Original Colors (preserved for reference) */
   --tropical-deep-green: 25, 30, 25; /* #191E19 - Deep forest green */
   --tropical-sage: 67, 84, 67; /* #435443 - Sage green */
   --tropical-ocean-deep: 15, 43, 62; /* #0F2B3E - Deep ocean blue */
   --tropical-ocean: 33, 66, 99; /* #214263 - Ocean blue */
   --tropical-ocean-light: 64, 123, 158; /* #407B9E - Light ocean */
-  --tropical-sand: 234, 221, 202; /* #EADDCA - Light tan/sand */
   --tropical-volcanic: 139, 35, 35; /* #8B2323 - Lava red */
-  --tropical-stone: 45, 45, 43; /* #2D2D2B - Dark grey/charcoal */
-  --tropical-mist: 245, 243, 240; /* #F5F3F0 - Off-white */
-
-  /* Map semantic variables to design specification colors */
-  --background: rgb(var(--tropical-mist));                     /* Light off-white */
-  --foreground: rgb(var(--tropical-stone));                    /* Dark text   */
-  --muted: 45, 45, 43; /* Stone */
-  --muted-foreground: 234, 221, 202; /* Sand */
-  --popover: 45, 45, 43; /* Stone */
-  --popover-foreground: 245, 243, 240; /* Mist */
-  --card: 45, 45, 43; /* Stone */
-  --card-foreground: 245, 243, 240; /* Mist */
-  --border: 67, 84, 67; /* Sage */
-  --input: 67, 84, 67; /* Sage */
-  --primary: 64, 123, 158; /* Ocean light */
-  --primary-foreground: 245, 243, 240; /* Mist */
-  --secondary: 67, 84, 67; /* Sage */
-  --secondary-foreground: 245, 243, 240; /* Mist */
-  --accent: 33, 66, 99; /* Ocean */
-  --accent-foreground: 245, 243, 240; /* Mist */
-  --destructive: 139, 35, 35; /* Volcanic */
-  --destructive-foreground: 245, 243, 240; /* Mist */
-  --ring: 64, 123, 158; /* Ocean light */
+  
+  /* Updated background with mist→sand gradient */
+  --background: linear-gradient(
+    to bottom, 
+    rgb(var(--tropical-mist)) 0%, 
+    rgb(var(--tropical-mist)) 40%,
+    rgb(var(--tropical-sand)) 100%
+  );
+  --foreground: rgb(var(--tropical-stone));    /* Dark text */
+  
+  /* Other variables */
+  --card: rgb(var(--tropical-mist));
+  --card-foreground: rgb(var(--tropical-stone));
+  --popover: rgb(var(--tropical-mist));
+  --popover-foreground: rgb(var(--tropical-stone));
+  --primary: rgb(var(--tropical-stone));
+  --primary-foreground: rgb(var(--tropical-mist));
+  --secondary: rgb(var(--tropical-sand));
+  --secondary-foreground: rgb(var(--tropical-stone));
+  --muted: rgba(var(--tropical-stone), 0.1);
+  --muted-foreground: rgba(var(--tropical-stone), 0.7);
+  --accent: rgb(var(--tropical-sand));
+  --accent-foreground: rgb(var(--tropical-stone));
+  --destructive: 239, 68, 68;
+  --destructive-foreground: rgb(var(--tropical-mist));
+  --border: rgba(var(--tropical-stone), 0.2);
+  --input: rgba(var(--tropical-stone), 0.1);
+  --ring: rgb(var(--tropical-stone));
+  --radius: 0.5rem;
 
   /* Design System Shadows - Design Specification Exact */
   --shadow-sm: 0 2px 8px rgb(0, 0, 0, 0.1);
@@ -53,8 +63,8 @@
   --z-tooltip: 60;
 
   /* Semantic Color Mappings - Design Specification Exact */
-  /* --background removed to avoid duplication */
-  --foreground: rgb(var(--tropical-stone)); /* Dark text */
+  --background: rgb(var(--tropical-deep-green)); /* Background: Deep green */
+  --foreground: rgb(var(--tropical-mist)); /* Text Primary: Mist (#F5F3F0) */
   --text-primary: var(--tropical-stone); /* Primary text color */
   --muted: rgb(var(--tropical-sage) / 0.5);
   --muted-foreground: rgb(var(--tropical-sand)); /* Text Secondary: Sand (#EADDCA) */
@@ -77,8 +87,31 @@
   --radius: 1.25rem;
 }
 
+/* Dark mode adjustments */
 .dark {
-  /* Dark mode uses the same palette */
+  --background: linear-gradient(
+    to bottom,
+    rgb(20, 20, 20) 0%,
+    rgb(30, 25, 20) 100%
+  );
+  --foreground: rgb(var(--tropical-mist));
+  --card: rgb(20, 20, 20);
+  --card-foreground: rgb(var(--tropical-mist));
+  --popover: rgb(20, 20, 20);
+  --popover-foreground: rgb(var(--tropical-mist));
+  --primary: rgb(var(--tropical-mist));
+  --primary-foreground: rgb(20, 20, 20);
+  --secondary: rgb(30, 25, 20);
+  --secondary-foreground: rgb(var(--tropical-mist));
+  --muted: rgba(var(--tropical-mist), 0.1);
+  --muted-foreground: rgba(var(--tropical-mist), 0.7);
+  --accent: rgb(30, 25, 20);
+  --accent-foreground: rgb(var(--tropical-mist));
+  --destructive: 239, 68, 68;
+  --destructive-foreground: rgb(var(--tropical-mist));
+  --border: rgba(var(--tropical-mist), 0.2);
+  --input: rgba(var(--tropical-mist), 0.1);
+  --ring: rgb(var(--tropical-mist));
 }
 
 @layer base {
@@ -89,10 +122,10 @@
   body {
     @apply font-sans antialiased;
     font-family: 'Outfit', sans-serif;
-    background: linear-gradient(180deg, var(--tropical-mist) 0%, var(--tropical-sand) 100%) !important;
-    /* Design Specification: Lighter mist to sand gradient - Force Applied */
+    background: var(--background);
+    min-height: 100vh;
     background-attachment: fixed;
-    color: var(--text-primary) !important;
+    color: var(--foreground);
     position: relative;
   }
 
@@ -165,23 +198,20 @@
     line-height: 1.4;
   }
 
-  /* Clear typography hierarchy - Enhanced Contrast */
+  /* Clear typography hierarchy - Light Theme */
   .text-primary {
-    color: var(--text-primary);
+    color: var(--foreground);
     opacity: 1;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   }
-
+  
   .text-secondary { 
-    color: rgb(var(--tropical-sand)); 
+    color: rgba(var(--tropical-stone), 0.7);
     opacity: 1;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
-
+  
   .text-muted {
-    color: rgb(var(--tropical-sand) / 0.9);
+    color: rgba(var(--tropical-stone), 0.5);
     opacity: 1;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   /* Secondary text for small, meta, and caption elements */
@@ -193,28 +223,28 @@
 }
 
 @layer components {
-  /* Kamaʻāina Compass Card System - Direct Hex Colors */
+  /* Kamaʻāina Compass Card System - Light Theme */
   .tropical-card {
     border-radius: 1.5rem;
     background: linear-gradient(135deg, 
-      rgba(45, 45, 43, 0.92) 0%,
-      rgba(45, 45, 43, 0.98) 100%) !important;
+      rgba(var(--tropical-mist), 0.95) 0%,
+      rgba(var(--tropical-mist), 0.98) 100%) !important;
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(67, 84, 67, 0.3) !important;
+    border: 1px solid rgba(var(--tropical-stone), 0.1) !important;
     box-shadow: 
-      0 8px 32px rgba(25, 30, 25, 0.4),
-      inset 0 1px 0 rgba(234, 221, 202, 0.15),
-      0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+      0 4px 16px rgba(var(--tropical-stone), 0.1),
+      0 1px 3px rgba(var(--tropical-stone), 0.05),
+      0 0 0 1px rgba(var(--tropical-stone), 0.05) !important;
     transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .tropical-card:hover {
     transform: translateY(-2px);
     box-shadow: 
-      0 12px 40px rgb(var(--tropical-deep-green) / 0.4),
-      inset 0 1px 0 rgb(var(--tropical-sand) / 0.15),
-      0 0 0 1px rgb(var(--tropical-ocean-light) / 0.2);
-    border-color: rgb(var(--tropical-sage) / 0.4);
+      0 8px 24px rgba(var(--tropical-stone), 0.15),
+      0 2px 6px rgba(var(--tropical-stone), 0.08),
+      0 0 0 1px rgba(var(--tropical-stone), 0.08);
+    border-color: rgba(var(--tropical-stone), 0.15);
   }
 
   /* Kamaʻāina Compass Button System */
@@ -304,23 +334,23 @@
     animation: pulse 2s ease-in-out infinite;
   }
 
-  /* Glass Effects - Direct Hex Colors */
+  /* Glass Effects - Light Theme */
   .glass {
-    background: rgba(45, 45, 43, 0.85) !important; /* Stone #2D2D2B */
+    background: rgba(var(--tropical-mist), 0.85) !important;
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(234, 221, 202, 0.3) !important; /* Sand #EADDCA */
+    border: 1px solid rgba(var(--tropical-stone), 0.08) !important;
     box-shadow: 
-      0 4px 16px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(234, 221, 202, 0.15);
+      0 2px 8px rgba(var(--tropical-stone), 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
 
   .glass-enhanced {
-    background: rgba(45, 45, 43, 0.9) !important; /* Stone #2D2D2B */
+    background: rgba(var(--tropical-mist), 0.9) !important;
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(234, 221, 202, 0.3) !important; /* Sand #EADDCA */
+    border: 1px solid rgba(var(--tropical-stone), 0.1) !important;
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(234, 221, 202, 0.1);
+      0 4px 16px rgba(var(--tropical-stone), 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
 
   /* Dark gradient header */
@@ -338,14 +368,14 @@
     color: rgb(var(--tropical-mist));
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
-
+  
   .text-emphasis-medium { 
     opacity: 0.95; 
     font-weight: 500; 
     color: rgb(var(--tropical-sand));
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
-
+  
   .text-emphasis-low { 
     opacity: 0.85; 
     font-weight: 400; 
