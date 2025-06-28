@@ -15,10 +15,10 @@
   --tropical-volcanic: 139, 35, 35; /* #8B2323 - Lava red */
   --tropical-stone: 45, 45, 43; /* #2D2D2B - Dark grey/charcoal */
   --tropical-mist: 245, 243, 240; /* #F5F3F0 - Off-white */
-  
+
   /* Map semantic variables to design specification colors */
-  --background: 25, 30, 25; /* Deep green */
-  --foreground: 245, 243, 240; /* Mist */
+  --background: rgb(var(--tropical-mist));                     /* Light off-white */
+  --foreground: rgb(var(--tropical-stone));                    /* Dark text   */
   --muted: 45, 45, 43; /* Stone */
   --muted-foreground: 234, 221, 202; /* Sand */
   --popover: 45, 45, 43; /* Stone */
@@ -53,8 +53,9 @@
   --z-tooltip: 60;
 
   /* Semantic Color Mappings - Design Specification Exact */
-  --background: rgb(var(--tropical-deep-green)); /* Background: Deep green */
-  --foreground: rgb(var(--tropical-mist)); /* Text Primary: Mist (#F5F3F0) */
+  /* --background removed to avoid duplication */
+  --foreground: rgb(var(--tropical-stone)); /* Dark text */
+  --text-primary: var(--tropical-stone); /* Primary text color */
   --muted: rgb(var(--tropical-sage) / 0.5);
   --muted-foreground: rgb(var(--tropical-sand)); /* Text Secondary: Sand (#EADDCA) */
   --popover: rgb(var(--tropical-stone) / 0.98); /* Surface: Stone with varying opacity (80-98%) */
@@ -72,6 +73,7 @@
   --destructive: rgb(var(--tropical-volcanic)); /* Error/Destructive: Volcanic (#8B2323) */
   --destructive-foreground: rgb(var(--tropical-mist));
   --ring: rgb(var(--tropical-ocean-light) / 0.5);
+  --text-secondary: #6B6B68; /* 60% grey */
   --radius: 1.25rem;
 }
 
@@ -90,7 +92,7 @@
     background: linear-gradient(180deg, var(--tropical-mist) 0%, var(--tropical-sand) 100%) !important;
     /* Design Specification: Lighter mist to sand gradient - Force Applied */
     background-attachment: fixed;
-    color: rgb(245, 243, 240) !important; /* Text Primary: Mist (#F5F3F0) */
+    color: var(--text-primary) !important;
     position: relative;
   }
 
@@ -164,22 +166,29 @@
   }
 
   /* Clear typography hierarchy - Enhanced Contrast */
-  .text-primary { 
-    color: rgb(var(--tropical-mist)); 
-    opacity: 1; 
+  .text-primary {
+    color: var(--text-primary);
+    opacity: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   }
-  
+
   .text-secondary { 
     color: rgb(var(--tropical-sand)); 
     opacity: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
-  
-  .text-muted { 
-    color: rgb(var(--tropical-sand) / 0.9); 
+
+  .text-muted {
+    color: rgb(var(--tropical-sand) / 0.9);
     opacity: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Secondary text for small, meta, and caption elements */
+  small,
+  .meta,
+  .caption {
+    color: var(--text-secondary);
   }
 }
 
@@ -309,9 +318,17 @@
     background: rgba(45, 45, 43, 0.9) !important; /* Stone #2D2D2B */
     backdrop-filter: blur(16px);
     border: 1px solid rgba(234, 221, 202, 0.3) !important; /* Sand #EADDCA */
-    box-shadow: 
+    box-shadow:
       0 4px 16px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(234, 221, 202, 0.1);
+  }
+
+  /* Dark gradient header */
+  .site-header {
+    background: linear-gradient(180deg,
+      rgb(var(--tropical-deep-green)) 0%,
+      rgb(var(--tropical-ocean-deep)) 100%);
+    color: rgb(var(--tropical-mist));
   }
 
   /* Text Emphasis Classes - Design Specification Compliant */
@@ -321,14 +338,14 @@
     color: rgb(var(--tropical-mist));
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
-  
+
   .text-emphasis-medium { 
     opacity: 0.95; 
     font-weight: 500; 
     color: rgb(var(--tropical-sand));
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
-  
+
   .text-emphasis-low { 
     opacity: 0.85; 
     font-weight: 400; 
@@ -569,13 +586,10 @@
 
 /* Force all backgrounds to use design specification */
 .bg-background, 
-body, 
+body,
 #root,
 [data-theme] {
-  background: linear-gradient(135deg,
-    #191E19 0%,
-    #2D2D2B 50%,
-    #0F2B3E 100%) !important;
+  background: linear-gradient(180deg, var(--tropical-mist) 0%, var(--tropical-sand) 100%);
   background-color: #191E19 !important;
 }
 
@@ -583,8 +597,8 @@ body,
 .text-foreground,
 .text-primary,
 h1, h2, h3, h4, h5, h6,
-p, span, div {
-  color: #F5F3F0 !important; /* Mist */
+body, p, li {
+  color: var(--text-primary) !important;
 }
 
 .text-muted-foreground,
@@ -618,4 +632,17 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus {
   border-color: rgb(var(--tropical-ocean-light) / 0.6) !important;
   box-shadow: 0 0 0 3px rgb(var(--tropical-ocean) / 0.1) !important;
+}
+
+/* Accent actions */
+a,
+.btn-primary {
+  background-color: rgb(var(--tropical-ocean-light));
+  color: rgb(var(--tropical-mist));
+  transition: background-color 0.3s ease;
+}
+
+a:hover,
+.btn-primary:hover {
+  background-color: color-mix(in srgb, rgb(var(--tropical-ocean-light)) 92%, black);
 }
