@@ -41,10 +41,9 @@ function App() {
           }}
         >
           <TooltipProvider>
-            <div className="dark">
-              <Toaster />
-              <Router />
-            </div>
+            {/* Removed the dark class wrapper */}
+            <Toaster />
+            <Router />
           </TooltipProvider>
         </SWRConfig>
       </QueryClientProvider>

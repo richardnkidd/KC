@@ -5,53 +5,80 @@
 @tailwind utilities;
 
 :root {
-  /* Tropical color palette */
-  --tropical-mist: 245, 250, 248;      /* Light off-white/mist */
-  --tropical-sand: 238, 224, 201;      /* Warm sand color */
-  --tropical-stone: 51, 51, 51;        /* Dark text color */
-  
-  /* Kamaʻāina Compass Design System - Original Colors (preserved for reference) */
-  --tropical-deep-green: 25, 30, 25; /* #191E19 - Deep forest green */
-  --tropical-sage: 67, 84, 67; /* #435443 - Sage green */
-  --tropical-ocean-deep: 15, 43, 62; /* #0F2B3E - Deep ocean blue */
-  --tropical-ocean: 33, 66, 99; /* #214263 - Ocean blue */
-  --tropical-ocean-light: 64, 123, 158; /* #407B9E - Light ocean */
-  --tropical-volcanic: 139, 35, 35; /* #8B2323 - Lava red */
-  
-  /* Updated background with mist→sand gradient */
-  --background: linear-gradient(
-    to bottom, 
-    rgb(var(--tropical-mist)) 0%, 
-    rgb(var(--tropical-mist)) 40%,
-    rgb(var(--tropical-sand)) 100%
-  );
-  --foreground: rgb(var(--tropical-stone));    /* Dark text */
-  
-  /* Other variables */
-  --card: rgb(var(--tropical-mist));
-  --card-foreground: rgb(var(--tropical-stone));
-  --popover: rgb(var(--tropical-mist));
-  --popover-foreground: rgb(var(--tropical-stone));
-  --primary: rgb(var(--tropical-stone));
-  --primary-foreground: rgb(var(--tropical-mist));
-  --secondary: rgb(var(--tropical-sand));
-  --secondary-foreground: rgb(var(--tropical-stone));
-  --muted: rgba(var(--tropical-stone), 0.1);
-  --muted-foreground: rgba(var(--tropical-stone), 0.7);
-  --accent: rgb(var(--tropical-sand));
-  --accent-foreground: rgb(var(--tropical-stone));
-  --destructive: 239, 68, 68;
-  --destructive-foreground: rgb(var(--tropical-mist));
-  --border: rgba(var(--tropical-stone), 0.2);
-  --input: rgba(var(--tropical-stone), 0.1);
-  --ring: rgb(var(--tropical-stone));
-  --radius: 0.5rem;
+  /* Tropical color palette - Core Design System */
+  --tropical-mist: 245, 250, 248;      /* #F5FAF8 - Light off-white */
+  --tropical-sand: 238, 224, 201;      /* #EEE0C9 - Warm sand */
+  --tropical-sand-soft: 240, 231, 216; /* #F0E7D8 - Softer sand */
+  --tropical-stone: 51, 51, 51;        /* #333333 - Dark text */
+  --tropical-deep-green: 25, 30, 25;   /* #191E19 - Deep forest green */
+  --tropical-sage: 67, 84, 67;         /* #435443 - Sage green */
+  --tropical-ocean-deep: 15, 43, 62;   /* #0F2B3E - Deep ocean blue */
+  --tropical-ocean: 33, 66, 99;        /* #214263 - Ocean blue */
+  --tropical-ocean-light: 64, 123, 158;/* #407B9E - Light ocean */
+  --tropical-volcanic: 139, 35, 35;    /* #8B2323 - Lava red */
 
-  /* Design System Shadows - Design Specification Exact */
-  --shadow-sm: 0 2px 8px rgb(0, 0, 0, 0.1);
-  --shadow-md: 0 8px 32px rgb(var(--tropical-deep-green) / 0.3);
-  --shadow-lg: 0 12px 40px rgb(var(--tropical-deep-green) / 0.4);
-  --shadow-inner: inset 0 1px 0 rgb(var(--tropical-sand) / 0.15);
+  /* Card Accent Colors */
+  --accent-weather-start: 135, 206, 235;    /* #87CEEB - Sky blue */
+  --accent-weather-end: 70, 130, 180;       /* #4682B4 - Steel blue */
+  --accent-surf-start: 32, 178, 170;        /* #20B2AA - Light sea green */
+  --accent-surf-end: 0, 139, 139;           /* #008B8B - Dark cyan */
+  --accent-tide-start: 75, 110, 175;        /* #4B6EAF - Slate blue */
+  --accent-tide-end: 44, 62, 80;            /* #2C3E50 - Midnight blue */
+  --accent-movies-start: 155, 89, 182;      /* #9B59B6 - Amethyst */
+  --accent-movies-end: 108, 92, 231;        /* #6C5CE7 - Medium purple */
+  --accent-events-start: 255, 152, 0;       /* #FF9800 - Orange */
+  --accent-events-end: 255, 87, 34;         /* #FF5722 - Deep orange */
+
+  /* Status Colors */
+  --status-excellent: 16, 185, 129;         /* #10B981 - Emerald */
+  --status-good: 59, 130, 246;              /* #3B82F6 - Blue */
+  --status-fair: 245, 158, 11;              /* #F59E0B - Amber */
+  --status-poor: 239, 68, 68;               /* #EF4444 - Red */
+
+  /* Background Gradient System */
+  --background-start: rgb(var(--tropical-mist));
+  --background-mid: rgb(var(--tropical-mist));
+  --background-end: rgb(var(--tropical-sand-soft));
+
+  /* Text Color System */
+  --text-primary: rgb(var(--tropical-stone));
+  --text-secondary: rgba(var(--tropical-stone), 0.7);
+  --text-muted: rgba(var(--tropical-stone), 0.5);
+
+  /* Component Colors */
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(0, 0, 0, 0.06);
+  --input-bg: rgba(255, 255, 255, 0.8);
+  --input-border: rgba(0, 0, 0, 0.1);
+
+  /* Shadows - Multi-layer system */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 8px -2px rgba(0, 0, 0, 0.08), 0 12px 24px -8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 16px -4px rgba(0, 0, 0, 0.12), 0 20px 32px -12px rgba(0, 0, 0, 0.12);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.04), inset 0 -1px 0 rgba(255, 255, 255, 0.5);
+
+  /* Semantic Mappings */
+  --background: var(--background-start);
+  --foreground: var(--text-primary);
+  --card: var(--card-bg);
+  --card-foreground: var(--text-primary);
+  --popover: rgba(255, 255, 255, 0.98);
+  --popover-foreground: var(--text-primary);
+  --primary: rgb(var(--tropical-ocean));
+  --primary-foreground: rgb(var(--tropical-mist));
+  --secondary: rgb(var(--tropical-sage));
+  --secondary-foreground: rgb(var(--tropical-mist));
+  --muted: rgba(var(--tropical-stone), 0.1);
+  --muted-foreground: var(--text-secondary);
+  --accent: rgb(var(--tropical-ocean-light));
+  --accent-foreground: rgb(var(--tropical-mist));
+  --destructive: rgb(var(--tropical-volcanic));
+  --destructive-foreground: rgb(var(--tropical-mist));
+  --border: var(--card-border);
+  --input: var(--input-border);
+  --ring: rgba(var(--tropical-ocean-light), 0.5);
+  --radius: 1.25rem;
 
   /* Z-Index Scale */
   --z-base: 0;
@@ -61,57 +88,31 @@
   --z-popover: 40;
   --z-header: 50;
   --z-tooltip: 60;
-
-  /* Semantic Color Mappings - Design Specification Exact */
-  --background: rgb(var(--tropical-deep-green)); /* Background: Deep green */
-  --foreground: rgb(var(--tropical-mist)); /* Text Primary: Mist (#F5F3F0) */
-  --text-primary: var(--tropical-stone); /* Primary text color */
-  --muted: rgb(var(--tropical-sage) / 0.5);
-  --muted-foreground: rgb(var(--tropical-sand)); /* Text Secondary: Sand (#EADDCA) */
-  --popover: rgb(var(--tropical-stone) / 0.98); /* Surface: Stone with varying opacity (80-98%) */
-  --popover-foreground: rgb(var(--tropical-mist));
-  --card: rgb(var(--tropical-stone) / 0.92); /* Surface: Stone 92-98% opacity */
-  --card-foreground: rgb(var(--tropical-mist));
-  --border: rgb(var(--tropical-sage) / 0.3);
-  --input: rgb(var(--tropical-stone) / 0.8); /* Surface: Stone 80% opacity */
-  --primary: rgb(var(--tropical-ocean));
-  --primary-foreground: rgb(var(--tropical-mist));
-  --secondary: rgb(var(--tropical-sage));
-  --secondary-foreground: rgb(var(--tropical-mist));
-  --accent: rgb(var(--tropical-ocean-light)); /* Accent: Ocean light (#407B9E) */
-  --accent-foreground: rgb(var(--tropical-deep-green));
-  --destructive: rgb(var(--tropical-volcanic)); /* Error/Destructive: Volcanic (#8B2323) */
-  --destructive-foreground: rgb(var(--tropical-mist));
-  --ring: rgb(var(--tropical-ocean-light) / 0.5);
-  --text-secondary: #6B6B68; /* 60% grey */
-  --radius: 1.25rem;
 }
 
-/* Dark mode adjustments */
+/* Dark mode - inherits tropical palette with adjustments */
 .dark {
-  --background: linear-gradient(
-    to bottom,
-    rgb(20, 20, 20) 0%,
-    rgb(30, 25, 20) 100%
-  );
-  --foreground: rgb(var(--tropical-mist));
-  --card: rgb(20, 20, 20);
-  --card-foreground: rgb(var(--tropical-mist));
-  --popover: rgb(20, 20, 20);
-  --popover-foreground: rgb(var(--tropical-mist));
-  --primary: rgb(var(--tropical-mist));
-  --primary-foreground: rgb(20, 20, 20);
-  --secondary: rgb(30, 25, 20);
-  --secondary-foreground: rgb(var(--tropical-mist));
+  --background-start: rgb(var(--tropical-deep-green));
+  --background-mid: rgb(var(--tropical-deep-green));
+  --background-end: rgb(var(--tropical-ocean-deep));
+  --text-primary: rgb(var(--tropical-mist));
+  --text-secondary: rgba(var(--tropical-mist), 0.8);
+  --text-muted: rgba(var(--tropical-mist), 0.6);
+  --card-bg: rgba(var(--tropical-stone), 0.92);
+  --card-border: rgba(var(--tropical-sage), 0.3);
+  --input-bg: rgba(var(--tropical-stone), 0.8);
+  --input-border: rgba(var(--tropical-sage), 0.4);
+
+  --background: var(--background-start);
+  --foreground: var(--text-primary);
+  --card: var(--card-bg);
+  --card-foreground: var(--text-primary);
+  --popover: rgba(var(--tropical-stone), 0.98);
+  --popover-foreground: var(--text-primary);
   --muted: rgba(var(--tropical-mist), 0.1);
-  --muted-foreground: rgba(var(--tropical-mist), 0.7);
-  --accent: rgb(30, 25, 20);
-  --accent-foreground: rgb(var(--tropical-mist));
-  --destructive: 239, 68, 68;
-  --destructive-foreground: rgb(var(--tropical-mist));
-  --border: rgba(var(--tropical-mist), 0.2);
-  --input: rgba(var(--tropical-mist), 0.1);
-  --ring: rgb(var(--tropical-mist));
+  --muted-foreground: var(--text-secondary);
+  --border: var(--card-border);
+  --input: var(--input-border);
 }
 
 @layer base {
@@ -122,14 +123,19 @@
   body {
     @apply font-sans antialiased;
     font-family: 'Outfit', sans-serif;
-    background: var(--background);
+    background: linear-gradient(
+      to bottom, 
+      var(--background-start) 0%, 
+      var(--background-mid) 60%,
+      var(--background-end) 100%
+    );
     min-height: 100vh;
     background-attachment: fixed;
     color: var(--foreground);
     position: relative;
   }
 
-  /* Minimal pattern overlay for better readability */
+  /* Subtle pattern overlay */
   body::before {
     content: '';
     position: fixed;
@@ -138,116 +144,389 @@
     right: 0;
     bottom: 0;
     background-image: 
-      radial-gradient(circle at 20% 50%, rgb(var(--tropical-ocean) / 0.005) 0%, transparent 50%),
-      radial-gradient(circle at 80% 50%, rgb(var(--tropical-sage) / 0.005) 0%, transparent 50%),
-      radial-gradient(circle at 50% 20%, rgb(var(--tropical-sand) / 0.005) 0%, transparent 50%);
+      radial-gradient(circle at 20% 50%, rgba(var(--tropical-ocean), 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, rgba(var(--tropical-sage), 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 50% 20%, rgba(var(--tropical-ocean-light), 0.02) 0%, transparent 50%);
     background-size: 400px 400px, 600px 600px, 800px 800px;
     animation: floatPattern 120s ease-in-out infinite;
     pointer-events: none;
     z-index: 1;
-    opacity: 0.15;
   }
 
-  /* Ensure content is above pattern */
+  /* Subtle texture overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.01'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Content above pattern */
   #root {
     position: relative;
     z-index: 2;
   }
 
-  /* Typography System - Kamaʻāina Compass Design Specification */
+  /* Typography System with Strong Hierarchy */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Sora', sans-serif;
+    color: var(--text-primary);
   }
 
-  h1 {
-    font-size: 1.5rem;     /* 24px */
+  .text-h1 {
+    font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.2;
   }
 
-  h2 {
-    font-size: 1.25rem;    /* 20px */
+  .text-h2 {
+    font-size: 1.25rem;
     font-weight: 600;
     line-height: 1.3;
   }
 
-  h3 {
-    font-size: 0.875rem;   /* 14px */
+  .text-h3 {
+    font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.4;
   }
 
-  /* Body text uses Outfit font */
-  body, p, div, span {
-    font-family: 'Outfit', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', sans-serif;
-    font-size: 1rem;       /* 16px */
+  .text-body {
+    font-size: 1rem;
     font-weight: 400;
     line-height: 1.6;
   }
 
-  /* Utility typography classes */
   .text-small {
-    font-size: 0.75rem;    /* 12px */
+    font-size: 0.75rem;
     font-weight: 400;
     line-height: 1.5;
   }
 
   .text-caption {
-    font-size: 0.625rem;   /* 10px */
-    font-weight: 400;
+    font-size: 0.625rem;
+    font-weight: 500;
     line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(51, 51, 51, 0.5) !important;
   }
 
-  /* Clear typography hierarchy - Light Theme */
+  /* Metric Typography */
+  .metric-primary {
+    font-size: 3rem;
+    font-weight: 200;
+    letter-spacing: -0.03em;
+    color: #214263;
+    margin: 0.5rem 0;
+    background: linear-gradient(135deg, #214263 0%, #407B9E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .metric-secondary {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #5A5A5A;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .metric-support {
+    font-size: 0.875rem;
+    color: #8B8B8B;
+    font-weight: 400;
+  }
+
+  /* Text color hierarchy */
   .text-primary {
-    color: var(--foreground);
-    opacity: 1;
-  }
-  
-  .text-secondary { 
-    color: rgba(var(--tropical-stone), 0.7);
-    opacity: 1;
-  }
-  
-  .text-muted {
-    color: rgba(var(--tropical-stone), 0.5);
-    opacity: 1;
+    color: var(--text-primary);
   }
 
-  /* Secondary text for small, meta, and caption elements */
-  small,
-  .meta,
-  .caption {
+  .text-secondary { 
     color: var(--text-secondary);
+  }
+
+  .text-muted {
+    color: var(--text-muted);
+  }
+
+  /* Font display utilities */
+  .font-display {
+    font-family: 'Sora', sans-serif;
   }
 }
 
 @layer components {
-  /* Kamaʻāina Compass Card System - Light Theme */
+  /* Site header gradient with enhancements */
+  .site-header {
+    background: linear-gradient(180deg,
+      rgb(var(--tropical-deep-green)) 0%,
+      rgb(var(--tropical-ocean-deep)) 100%);
+    color: rgb(var(--tropical-mist));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Make header logo more visible */
+  .site-header .w-12.h-12 {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Base Card System with Multi-layer Shadows */
   .tropical-card {
     border-radius: 1.5rem;
-    background: linear-gradient(135deg, 
-      rgba(var(--tropical-mist), 0.95) 0%,
-      rgba(var(--tropical-mist), 0.98) 100%) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(var(--tropical-stone), 0.1) !important;
-    box-shadow: 
-      0 4px 16px rgba(var(--tropical-stone), 0.1),
-      0 1px 3px rgba(var(--tropical-stone), 0.05),
-      0 0 0 1px rgba(var(--tropical-stone), 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: var(--shadow-md);
     transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: scale(1);
+    border-top: 4px solid transparent;
+    padding: 1.5rem;
   }
 
   .tropical-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 24px rgba(var(--tropical-stone), 0.15),
-      0 2px 6px rgba(var(--tropical-stone), 0.08),
-      0 0 0 1px rgba(var(--tropical-stone), 0.08);
-    border-color: rgba(var(--tropical-stone), 0.15);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: var(--shadow-lg);
   }
 
-  /* Kamaʻāina Compass Button System */
+  /* Card-specific color accents */
+  .weather-card {
+    background: 
+      linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, rgb(var(--accent-weather-start)) 0%, rgb(var(--accent-weather-end)) 100%) border-box !important;
+  }
+
+  .surf-card {
+    background: 
+      linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, rgb(var(--accent-surf-start)) 0%, rgb(var(--accent-surf-end)) 100%) border-box !important;
+  }
+
+  .tide-card {
+    background: 
+      linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, rgb(var(--accent-tide-start)) 0%, rgb(var(--accent-tide-end)) 100%) border-box !important;
+  }
+
+  .movies-card {
+    background: 
+      linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, rgb(var(--accent-movies-start)) 0%, rgb(var(--accent-movies-end)) 100%) border-box !important;
+  }
+
+  .events-card {
+    background: 
+      linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, rgb(var(--accent-events-start)) 0%, rgb(var(--accent-events-end)) 100%) border-box !important;
+  }
+
+  /* Card Sections with Breathing Room */
+  .card-section {
+    padding: 1.5rem 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .card-section:first-child {
+    padding-top: 0;
+  }
+
+  .card-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  /* Metric Containers with Visual Hierarchy */
+  .metric-primary-container {
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  .metric-group {
+    background: linear-gradient(135deg, #F8FAFB 0%, #F3F4F6 100%);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  /* Data Wells for Depth */
+  .data-well {
+    background: #F8FAFB;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-inner);
+    padding: 1rem;
+  }
+
+  /* Data Pairs with Better Spacing */
+  .data-pair {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+  }
+
+  .data-pair:last-child {
+    border-bottom: none;
+  }
+
+  /* Status Indicators with Color Coding */
+  .condition-excellent {
+    background: linear-gradient(135deg, rgb(var(--status-excellent)) 0%, rgba(var(--status-excellent), 0.8) 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .condition-good {
+    background: linear-gradient(135deg, rgb(var(--status-good)) 0%, rgba(var(--status-good), 0.8) 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .condition-fair {
+    background: linear-gradient(135deg, rgb(var(--status-fair)) 0%, rgba(var(--status-fair), 0.8) 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .condition-poor {
+    background: linear-gradient(135deg, rgb(var(--status-poor)) 0%, rgba(var(--status-poor), 0.8) 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Temperature Color Coding */
+  .temp-hot { color: #DC2626; font-weight: 600; }     /* >85°F */
+  .temp-perfect { color: #10B981; font-weight: 600; } /* 75-84°F */
+  .temp-cool { color: #3B82F6; font-weight: 600; }    /* <75°F */
+
+  /* Surf Condition Color Coding */
+  .surf-firing { color: #10B981; font-weight: 600; }  /* >4ft */
+  .surf-fun { color: #3B82F6; font-weight: 500; }     /* 2-4ft */
+  .surf-small { color: #6B7280; font-weight: 400; }   /* <2ft */
+
+  /* Section Dividers */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg, 
+      transparent 0%, 
+      rgba(0, 0, 0, 0.1) 50%, 
+      transparent 100%
+    );
+    margin: 2rem 0;
+  }
+
+  /* Pill Buttons with Depth */
+  .pill-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    background: rgba(var(--tropical-ocean-light), 0.1);
+    border: 1px solid rgba(var(--tropical-ocean-light), 0.2);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgb(var(--tropical-ocean));
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .pill-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: rgba(var(--tropical-ocean-light), 0.15);
+    border-color: rgba(var(--tropical-ocean-light), 0.3);
+  }
+
+  /* Override dark backgrounds on cards */
+  [data-theme="light"] .tropical-card,
+  .tropical-card,
+  div[class*="bg-gradient-to-br"] {
+    background: rgba(255, 255, 255, 0.95) !important;
+  }
+
+  /* Fix text colors in cards */
+  .tropical-card h1,
+  .tropical-card h2,
+  .tropical-card h3,
+  .tropical-card p,
+  .tropical-card span {
+    color: #333333 !important;
+  }
+
+  /* Section headers within cards */
+  .tropical-card h3 {
+    font-weight: 600;
+    color: rgb(var(--tropical-ocean-deep)) !important;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Fix secondary text */
+  .tropical-card .text-secondary,
+  .tropical-card .text-muted {
+    color: rgba(51, 51, 51, 0.7) !important;
+  }
+
+  /* Enhanced main values */
+  .tropical-card span[style*="font-size: 48px"],
+  .tropical-card .text-[48px] {
+    font-weight: 200;
+    letter-spacing: -0.02em;
+    color: rgb(var(--tropical-ocean)) !important;
+  }
+
+  /* Icon containers with better contrast */
+  .tropical-card .w-12.h-12.rounded-2xl {
+    background: linear-gradient(135deg, 
+      rgba(var(--tropical-ocean), 0.1) 0%, 
+      rgba(var(--tropical-ocean-light), 0.08) 100%) !important;
+    border: 1px solid rgba(var(--tropical-ocean), 0.15);
+  }
+
+  /* Fix the wave icon containers */
+  .tropical-card [class*="bg-gradient-to-br"] {
+    opacity: 0.9;
+    filter: contrast(1.1) brightness(1.05);
+  }
+
+  /* Weather card specific fixes */
+  .tropical-card .text-small,
+  .tropical-card .text-caption {
+    color: rgba(51, 51, 51, 0.6) !important;
+  }
+
+  /* Tropical Button System */
   .tropical-button {
     border-radius: 1rem;
     padding: 0.75rem 1.5rem;
@@ -256,10 +535,10 @@
       rgb(var(--tropical-ocean-light)) 100%);
     color: rgb(var(--tropical-mist));
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
   }
 
   .tropical-button::before {
@@ -270,7 +549,7 @@
     width: 0;
     height: 0;
     border-radius: 50%;
-    background: rgb(var(--tropical-sand) / 0.3);
+    background: rgba(255, 255, 255, 0.3);
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
   }
@@ -282,46 +561,33 @@
 
   .tropical-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgb(var(--tropical-ocean) / 0.4);
-    transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: var(--shadow-md);
   }
 
-  .tropical-button:active {
-    transform: translateY(0);
-    transition: all 200ms ease-out;
+  /* Enhanced button defaults */
+  button:not(.tropical-button) {
+    @apply rounded-2xl;
+    background: rgba(var(--tropical-ocean-light), 0.08);
+    border: 1px solid rgba(var(--tropical-ocean-light), 0.2);
+    color: rgb(var(--tropical-ocean));
+    transition: all 0.3s ease;
   }
 
-  .tropical-button:active::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgb(var(--tropical-sand) / 0.4);
-    transform: translate(-50%, -50%);
-    animation: ripple 600ms ease-out;
+  button:not(.tropical-button):hover {
+    transform: translateY(-1px);
+    background: rgba(var(--tropical-ocean-light), 0.15);
+    border-color: rgba(var(--tropical-ocean-light), 0.3);
   }
 
-  /* Wave decorations */
-  .wave-decoration {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(33,66,99,0.1)' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
-    background-size: cover;
-    pointer-events: none;
-  }
-
-  /* Status indicators with organic shapes */
+  /* Status indicators */
   .status-indicator {
     @apply rounded-full;
     width: 12px;
     height: 12px;
     position: relative;
+    box-shadow: 
+      0 0 0 2px rgba(255, 255, 255, 1),
+      0 0 0 3px rgba(0, 0, 0, 0.1);
   }
 
   .status-indicator::before {
@@ -334,63 +600,106 @@
     animation: pulse 2s ease-in-out infinite;
   }
 
-  /* Glass Effects - Light Theme */
+  /* Active/live indicators */
+  .bg-green-400 {
+    background: #10B981 !important;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  }
+
+  /* Glass Effects */
   .glass {
-    background: rgba(var(--tropical-mist), 0.85) !important;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(var(--tropical-stone), 0.08) !important;
-    box-shadow: 
-      0 2px 8px rgba(var(--tropical-stone), 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: var(--shadow-sm);
   }
 
   .glass-enhanced {
-    background: rgba(var(--tropical-mist), 0.9) !important;
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(var(--tropical-stone), 0.1) !important;
-    box-shadow:
-      0 4px 16px rgba(var(--tropical-stone), 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: var(--shadow-md);
   }
 
-  /* Dark gradient header */
-  .site-header {
-    background: linear-gradient(180deg,
-      rgb(var(--tropical-deep-green)) 0%,
-      rgb(var(--tropical-ocean-deep)) 100%);
-    color: rgb(var(--tropical-mist));
+  /* Progress bars (tide level) */
+  .tropical-card [style*="height: 12px"] {
+    height: 16px !important;
+    border-radius: 8px;
+    box-shadow: var(--shadow-inner);
   }
 
-  /* Text Emphasis Classes - Design Specification Compliant */
+  /* Movie times and action items */
+  .tropical-card span[class*="bg-slate"] {
+    background: rgba(var(--tropical-ocean-light), 0.1) !important;
+    border: 1px solid rgba(var(--tropical-ocean-light), 0.15) !important;
+    font-weight: 500;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-xs);
+  }
+
+  .tropical-card span[class*="bg-slate"]:hover {
+    background: rgba(var(--tropical-ocean-light), 0.2) !important;
+    transform: translateY(-1px);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Dark mode glass adjustments */
+  .dark .glass {
+    background: rgba(var(--tropical-stone), 0.85) !important;
+    border-color: rgba(var(--tropical-sage), 0.3) !important;
+  }
+
+  .dark .glass-enhanced {
+    background: rgba(var(--tropical-stone), 0.92) !important;
+    border-color: rgba(var(--tropical-sage), 0.4) !important;
+  }
+
+  /* Text emphasis classes for dark backgrounds */
   .text-emphasis-high { 
     opacity: 1; 
     font-weight: 600; 
     color: rgb(var(--tropical-mist));
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
-  
+
   .text-emphasis-medium { 
     opacity: 0.95; 
     font-weight: 500; 
-    color: rgb(var(--tropical-sand));
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    color: rgba(var(--tropical-sand), 0.95);
   }
-  
+
   .text-emphasis-low { 
     opacity: 0.85; 
     font-weight: 400; 
-    color: rgb(var(--tropical-sand));
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    color: rgba(var(--tropical-sand), 0.85);
   }
 
-  /* Accessibility - Focus States */
+  /* Fix background colors in components */
+  .bg-slate-600,
+  .bg-slate-700,
+  [class*="bg-slate"] {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+  }
+
+  /* Fix hover states */
+  [class*="hover:bg-slate"],
+  [class*="hover:bg-gray"] {
+    transition: background-color 0.2s;
+  }
+
+  [class*="hover:bg-slate"]:hover,
+  [class*="hover:bg-gray"]:hover {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+  }
+
+  /* Enhanced focus states */
   *:focus-visible {
-    outline: 2px solid rgb(var(--tropical-ocean-light));
-    outline-offset: 2px;
-    border-radius: 0.25rem;
+    outline: 3px solid rgb(var(--tropical-ocean));
+    outline-offset: 3px;
+    border-radius: 0.5rem;
   }
 
-  /* Touch Target Minimum Size */
+  /* Touch targets */
   .touch-target {
     min-width: 48px;
     min-height: 48px;
@@ -398,12 +707,7 @@
 }
 
 @layer utilities {
-  .touch-target {
-    min-height: 48px;
-    min-width: 48px;
-  }
-
-  /* Animation Utilities - Design Specification Compliant */
+  /* Animation utilities */
   .animate-fade-in {
     animation: fadeIn 500ms ease-in-out;
   }
@@ -420,94 +724,42 @@
     animation: float 6s ease-in-out infinite;
   }
 
-  .animate-shimmer {
-    animation: shimmer 2s ease-in-out infinite;
-  }
-
-  .animate-ripple {
-    animation: ripple 600ms ease-out;
-  }
-
-  .animate-pulse-enhanced {
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  .animate-bounce-enhanced {
-    animation: bounce 1000ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  /* Animation Duration Classes */
-  .animate-micro {
-    animation-duration: 200ms;
-  }
-
-  .animate-short {
-    animation-duration: 300ms;
-  }
-
-  .animate-medium {
-    animation-duration: 500ms;
-  }
-
-  .animate-long {
-    animation-duration: 1000ms;
-  }
-
-  /* Timing Function Classes */
-  .ease-bounce {
-    animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .ease-standard {
-    animation-timing-function: ease-in-out;
-  }
-
-  /* Loading States with Shimmer Effects */
-  .loading-shimmer {
-    position: relative;
-    overflow: hidden;
-    background: rgb(var(--tropical-stone) / 0.3);
-  }
-
-  .loading-shimmer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  /* Loading states */
+  .loading-skeleton {
     background: linear-gradient(
       90deg,
-      transparent 0%,
-      rgb(var(--tropical-sand) / 0.1) 50%,
-      transparent 100%
+      rgba(0, 0, 0, 0.04) 25%,
+      rgba(0, 0, 0, 0.06) 50%,
+      rgba(0, 0, 0, 0.04) 75%
     );
-    animation: shimmer 2s ease-in-out infinite;
-  }
-
-  .loading-skeleton {
-    background: rgb(var(--tropical-stone) / 0.3);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
     border-radius: 0.5rem;
-    animation: pulse 2s ease-in-out infinite;
   }
 
-  /* Enhanced Gradient text with better contrast */
+  /* Gradient text */
   .gradient-text {
     background: linear-gradient(135deg, 
+      rgb(var(--tropical-ocean)) 0%, 
+      rgb(var(--tropical-ocean-light)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+  }
+
+  /* Dark mode gradient text */
+  .dark .gradient-text {
+    background: linear-gradient(135deg, 
       rgb(var(--tropical-ocean-light)) 0%, 
-      rgb(var(--tropical-mist)) 50%,
       rgb(var(--tropical-sand)) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    font-weight: 600;
   }
-
-  /* Legacy glass effect removed - use .glass class from components layer */
 }
 
-/* Design Specification Animation System */
+/* Animations */
 @keyframes fadeIn {
   0% { opacity: 0; transform: translateY(10px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -536,8 +788,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.3; }
-  50% { transform: scale(1.5); opacity: 0; }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 @keyframes shimmer {
@@ -545,34 +797,18 @@
   100% { transform: translateX(100%); }
 }
 
-@keyframes ripple {
-  0% { transform: scale(0); opacity: 1; }
-  100% { transform: scale(4); opacity: 0; }
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-@keyframes bounce {
-  0%, 20%, 53%, 80%, 100% {
-    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-    transform: translate3d(0,0,0);
-  }
-  40%, 43% {
-    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-    transform: translate3d(0, -30px, 0);
-  }
-  70% {
-    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
-    transform: translate3d(0, -15px, 0);
-  }
-  90% { transform: translate3d(0,-4px,0); }
-}
-
-/* Custom scrollbar with tropical colors */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(var(--tropical-stone) / 0.5);
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
 }
 
@@ -591,88 +827,113 @@
   background: linear-gradient(
     180deg,
     rgb(var(--tropical-ocean-light)) 0%,
-    rgb(var(--tropical-sand) / 0.6) 100%
+    rgb(var(--tropical-ocean)) 100%
   );
   background-clip: padding-box;
 }
 
-/* Override shadcn/ui components for tropical theme */
-.dark {
-  /* Dark mode inherits the same tropical palette */
+/* Form elements for light theme */
+input,
+textarea,
+select {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #333333 !important;
+  transition: all 0.3s ease;
 }
 
-/* Force Design Specification Colors - Maximum Specificity */
-* {
-  --tropical-deep-green: 25, 30, 25 !important; /* #191E19 */
-  --tropical-sage: 67, 84, 67 !important; /* #435443 */
-  --tropical-ocean-deep: 15, 43, 62 !important; /* #0F2B3E */
-  --tropical-ocean: 33, 66, 99 !important; /* #214263 */
-  --tropical-ocean-light: 64, 123, 158 !important; /* #407B9E */
-  --tropical-sand: 234, 221, 202 !important; /* #EADDCA */
-  --tropical-volcanic: 139, 35, 35 !important; /* #8B2323 */
-  --tropical-stone: 45, 45, 43 !important; /* #2D2D2B */
-  --tropical-mist: 245, 243, 240 !important; /* #F5F3F0 */
+input:focus,
+textarea:focus,
+select:focus {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgb(64, 123, 158) !important;
+  box-shadow: 0 0 0 3px rgba(64, 123, 158, 0.1) !important;
+  outline: none;
 }
 
-/* Force all backgrounds to use design specification */
-.bg-background, 
-body,
-#root,
-[data-theme] {
-  background: linear-gradient(180deg, var(--tropical-mist) 0%, var(--tropical-sand) 100%);
-  background-color: #191E19 !important;
+/* Fix placeholder text */
+input::placeholder,
+textarea::placeholder {
+  color: rgba(51, 51, 51, 0.4) !important;
 }
 
-/* Force all text to use design specification */
-.text-foreground,
-.text-primary,
-h1, h2, h3, h4, h5, h6,
-body, p, li {
-  color: var(--text-primary) !important;
-}
-
-.text-muted-foreground,
-.text-secondary {
-  color: #EADDCA !important; /* Sand */
-}
-
-/* Enhance cards with organic shapes */
+/* Card improvements */
 [class*="rounded-xl"], [class*="rounded-lg"] {
-  border-radius: 1.5rem !important;
+  border-radius: 1.5rem;
 }
 
-/* Button enhancements */
-button:not(.tropical-button) {
-  @apply rounded-2xl;
-  transition: all 0.3s ease;
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .tropical-card {
+    padding: 1.25rem !important;
+  }
+
+  /* Larger tap areas */
+  button, 
+  .tropical-card span[class*="bg-slate"] {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Improved font sizes */
+  .text-h1 { font-size: 1.375rem; }
+  .text-h2 { font-size: 1.125rem; }
+  .text-body { font-size: 0.9375rem; }
+  .metric-primary { font-size: 2.5rem; }
+
+  /* Adjust gradient for mobile */
+  body {
+    background: linear-gradient(
+      to bottom, 
+      var(--background-start) 0%, 
+      var(--background-mid) 70%,
+      var(--background-end) 100%
+    );
+  }
 }
 
-button:not(.tropical-button):hover {
-  transform: translateY(-1px);
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .tropical-card {
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .text-primary {
+    color: #000000 !important;
+  }
+
+  button {
+    border-width: 2px !important;
+  }
 }
 
-/* Input fields with organic styling */
-input, textarea, select {
-  @apply rounded-2xl;
-  background: rgb(var(--tropical-stone) / 0.5) !important;
-  border-color: rgb(var(--tropical-sage) / 0.3) !important;
-  transition: all 0.3s ease;
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-input:focus, textarea:focus, select:focus {
-  border-color: rgb(var(--tropical-ocean-light) / 0.6) !important;
-  box-shadow: 0 0 0 3px rgb(var(--tropical-ocean) / 0.1) !important;
-}
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+  }
 
-/* Accent actions */
-a,
-.btn-primary {
-  background-color: rgb(var(--tropical-ocean-light));
-  color: rgb(var(--tropical-mist));
-  transition: background-color 0.3s ease;
-}
+  .tropical-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    background: white !important;
+  }
 
-a:hover,
-.btn-primary:hover {
-  background-color: color-mix(in srgb, rgb(var(--tropical-ocean-light)) 92%, black);
+  .site-header {
+    background: white !important;
+    color: black !important;
+    border-bottom: 2px solid #ddd;
+  }
 }

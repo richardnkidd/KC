@@ -126,19 +126,20 @@ export default function Home() {
       {/* Main Dashboard */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          <div className="tropical-card p-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          {/* Add color-coded card classes */}
+          <div className="tropical-card weather-card animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <WeatherCard />
           </div>
-          <div className="tropical-card p-6 animate-fade-in" style={{ animationDelay: '0.15s' }}>
+          <div className="tropical-card surf-card animate-fade-in" style={{ animationDelay: '0.15s' }}>
             <SurfCard />
           </div>
-          <div className="tropical-card p-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="tropical-card tide-card animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <TideCard />
           </div>
-          <div className="tropical-card p-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="tropical-card movies-card animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <MoviesCard />
           </div>
-          <div className="tropical-card p-6 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="tropical-card events-card animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <EventsCard />
           </div>
         </div>
