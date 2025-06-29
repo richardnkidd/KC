@@ -117,7 +117,7 @@ export default function Home() {
               <div className="relative group">
                 <div className="header-logo rounded-2xl flex items-center justify-center overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#407B9E]/10 to-[#214263]/5"></div>
-                  <img src={logoPath} alt="Kamaʻāina Compass" className="w-10 h-10 relative z-10" />
+                  <img src={logoPath} alt="Kamaʻāina Compass" className="w-full h-full relative z-10 p-1" />
                 </div>
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#407B9E]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>

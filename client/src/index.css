@@ -390,8 +390,8 @@
 
   /* Header logo container */
   .header-logo {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
     background: white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
@@ -438,8 +438,8 @@
     }
     
     .header-logo {
-      width: 48px;
-      height: 48px;
+      width: 64px;
+      height: 64px;
     }
   }
 

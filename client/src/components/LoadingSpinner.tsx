@@ -9,7 +9,7 @@ export const LoadingSpinner: React.FC = () => {
           <img 
             src={logoPath} 
             alt="Loading..." 
-            className="w-24 h-24 animate-spin-slow mb-4"
+            className="w-32 h-32 animate-spin-slow mb-4"
           />
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#407B9E]/20 to-transparent blur-2xl"></div>
         </div>
