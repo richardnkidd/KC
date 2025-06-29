@@ -29,7 +29,7 @@ const getWeatherIcon = (condition: string) => {
 export const WeatherHubCard: React.FC = () => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('Honolulu');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'radar' | 'forecast'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'air-quality' | 'forecast'>('overview');
 
   const { data: weather, isLoading: weatherLoading, error: weatherError } = useWeather();
   const { data: radarData, isLoading: radarLoading, error: radarError } = useRainRadar(selectedNeighborhood);
@@ -84,10 +84,23 @@ export const WeatherHubCard: React.FC = () => {
     return directions[Math.round(degrees / 22.5) % 16];
   };
 
+  const getVogLevel = (aqi: number) => {
+    if (aqi <= 50) return { level: 'Good', color: 'text-[#10B981]', bg: 'bg-[#10B981]/20', description: 'Air quality is satisfactory for most people.' };
+    if (aqi <= 100) return { level: 'Moderate', color: 'text-[#F59E0B]', bg: 'bg-[#F59E0B]/20', description: 'Unusually sensitive people should consider limiting prolonged outdoor exertion.' };
+    if (aqi <= 150) return { level: 'Unhealthy for Sensitive Groups', color: 'text-[#EF4444]', bg: 'bg-[#EF4444]/20', description: 'Active children and adults, and people with respiratory disease should limit prolonged outdoor exertion.' };
+    return { level: 'Unhealthy', color: 'text-[#8B2323]', bg: 'bg-[#8B2323]/20', description: 'Everyone may begin to experience health effects; sensitive groups may experience more serious health effects.' };
+  };
+
   const condition = getCurrentCondition();
+  const vogStatus = getVogLevel(radarData.vog.aqi);
+
+  // Fixed helper function to properly round percentages
+  const formatPercentage = (value: number): string => {
+    return Math.round(Math.max(0, Math.min(100, value))).toString();
+  };
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       {/* Header with Location Selector */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
@@ -179,18 +192,18 @@ export const WeatherHubCard: React.FC = () => {
               : "text-[#333333]/60 hover:text-[#333333]/80"
           )}
         >
-          Overview
+          ☀️ Current
         </button>
         <button
-          onClick={() => setActiveTab('radar')}
+          onClick={() => setActiveTab('air-quality')}
           className={cn(
             "flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all",
-            activeTab === 'radar' 
+            activeTab === 'air-quality' 
               ? "bg-white text-[#214263] shadow-sm" 
               : "text-[#333333]/60 hover:text-[#333333]/80"
           )}
         >
-          Rain Radar
+          🌋 Air Quality
         </button>
         <button
           onClick={() => setActiveTab('forecast')}
@@ -201,167 +214,222 @@ export const WeatherHubCard: React.FC = () => {
               : "text-[#333333]/60 hover:text-[#333333]/80"
           )}
         >
-          Forecast
+          📅 Forecast
         </button>
       </div>
 
-      {/* Tab Content */}
-      {activeTab === 'overview' && (
-        <div className="space-y-6">
-          {/* Current Conditions - Side by Side */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Temperature */}
-            <div className="glass rounded-2xl p-4">
-              <div className="text-center">
-                <span className="font-light gradient-text" style={{ fontSize: '36px' }}>{weather.current.temp}°</span>
-                <p className="text-body text-emphasis-high mt-1">{weather.current.condition}</p>
-                <p className="text-small text-emphasis-low">Feels like {weather.current.feelsLike}°F</p>
-              </div>
-            </div>
-
-            {/* Precipitation */}
-            <div className="glass rounded-2xl p-4">
-              <div className="text-center">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <span className="text-2xl">{condition.icon}</span>
-                  <span className="font-light gradient-text" style={{ fontSize: '24px' }}>{radarData.current.precipitation}"</span>
-                </div>
-                <p className={cn("text-body font-medium", condition.color)}>{condition.text}</p>
-                <p className="text-small text-emphasis-low">per hour</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Detailed Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="glass rounded-xl p-3">
-              <div className="flex items-center space-x-2 mb-1">
-                <Droplets className="w-4 h-4 text-[#407B9E]" />
-                <p className="text-caption text-emphasis-low">Humidity</p>
-              </div>
-              <p className="text-body font-medium text-emphasis-high">{weather.current.humidity}%</p>
-            </div>
-            <div className="glass rounded-xl p-3">
-              <div className="flex items-center space-x-2 mb-1">
-                <Wind className="w-4 h-4 text-[#407B9E]" />
-                <p className="text-caption text-emphasis-low">Wind</p>
-              </div>
-              <p className="text-body font-medium text-emphasis-high">
-                {radarData.current.windSpeed}mph {getWindDirection(radarData.current.windDirection)}
-              </p>
-            </div>
-            <div className="glass rounded-xl p-3">
-              <div className="flex items-center space-x-2 mb-1">
-                <Eye className="w-4 h-4 text-[#407B9E]" />
-                <p className="text-caption text-emphasis-low">Visibility</p>
-              </div>
-              <p className="text-body font-medium text-emphasis-high">{radarData.current.visibility} mi</p>
-            </div>
-            <div className="glass rounded-xl p-3">
-              <div className="flex items-center space-x-2 mb-1">
-                <Sun className="w-4 h-4 text-[#EADDCA]" />
-                <p className="text-caption text-emphasis-low">UV Index</p>
-              </div>
-              <p className="text-body font-medium text-emphasis-high">{weather.current.uvIndex}</p>
-            </div>
-          </div>
-
-          {/* Alerts */}
-          {radarData.alerts.length > 0 && (
-            <div className="glass rounded-2xl p-4 border-l-4 border-[#F59E0B]">
-              <h3 className="text-sm font-medium text-secondary mb-3 flex items-center">
-                <AlertTriangle className="w-4 h-4 mr-2 text-[#F59E0B]" />
-                Active Alerts
-              </h3>
-              <div className="space-y-2">
-                {radarData.alerts.slice(0, 2).map((alert, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className="w-6 h-6 rounded-lg bg-[#F59E0B]/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs">!</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-primary">{alert.type}</p>
-                      <p className="text-xs text-muted mt-1">{alert.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Rain Radar Tab */}
-      {activeTab === 'radar' && (
-        <div className="space-y-6">
-          {/* VOG Levels */}
-          <div className="glass rounded-2xl p-4">
-            <h3 className="text-sm font-medium text-secondary mb-3 flex items-center">
-              <Activity className="w-4 h-4 mr-2 text-[#10B981]" />
-              VOG & Air Quality
-            </h3>
+      {/* Tab Content - flex-1 to take remaining space */}
+      <div className="flex-1 flex flex-col">
+        {activeTab === 'overview' && (
+          <div className="space-y-6 flex-1">
+            {/* Current Conditions - Side by Side */}
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-caption text-emphasis-low mb-1">Air Quality Index</p>
-                <div className="flex items-baseline space-x-2">
-                  <span className="text-2xl font-light text-[#10B981]">{Math.round(radarData.vog.aqi)}</span>
-                  <span className="text-sm text-[#10B981]">{radarData.vog.level}</span>
+              {/* Temperature */}
+              <div className="glass rounded-2xl p-4">
+                <div className="text-center">
+                  <span className="font-light gradient-text" style={{ fontSize: '36px' }}>{weather.current.temp}°</span>
+                  <p className="text-body text-emphasis-high mt-1">{weather.current.condition}</p>
+                  <p className="text-small text-emphasis-low">Feels like {weather.current.feelsLike}°F</p>
                 </div>
               </div>
-              <div>
-                <p className="text-caption text-emphasis-low mb-1">Volcano Status</p>
-                <p className="text-body font-medium capitalize">{radarData.vog.volcanoStatus}</p>
+
+              {/* Precipitation */}
+              <div className="glass rounded-2xl p-4">
+                <div className="text-center">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <span className="text-2xl">{condition.icon}</span>
+                    <span className="font-light gradient-text" style={{ fontSize: '24px' }}>{radarData.current.precipitation}"</span>
+                  </div>
+                  <p className={cn("text-body font-medium", condition.color)}>{condition.text}</p>
+                  <p className="text-small text-emphasis-low">per hour</p>
+                </div>
               </div>
             </div>
-            <p className="text-xs text-muted mt-3">{radarData.vog.recommendation}</p>
-          </div>
 
-          {/* Hourly Rain Forecast */}
-          <div className="glass rounded-2xl p-4">
-            <h3 className="text-sm font-medium text-secondary mb-3">24-Hour Rain Forecast</h3>
-            <div className="overflow-x-auto -mx-4 px-4">
-              <div className="flex space-x-3 pb-2">
-                {radarData.hourly.slice(0, 12).map((hour, index) => (
-                  <div key={index} className="flex flex-col items-center min-w-[60px]">
-                    <p className="text-xs text-muted mb-1">{hour.time}</p>
-                    <div className="w-full bg-[rgba(0,0,0,0.1)] rounded-full h-12 relative overflow-hidden">
-                      <div 
-                        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#3B82F6] to-[#60A5FA] transition-all duration-300"
-                        style={{ height: `${hour.chanceOfRain}%` }}
-                      />
+            {/* Detailed Metrics */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="glass rounded-xl p-3">
+                <div className="flex items-center space-x-2 mb-1">
+                  <Droplets className="w-4 h-4 text-[#407B9E]" />
+                  <p className="text-caption text-emphasis-low">Humidity</p>
+                </div>
+                <p className="text-body font-medium text-emphasis-high">{weather.current.humidity}%</p>
+              </div>
+              <div className="glass rounded-xl p-3">
+                <div className="flex items-center space-x-2 mb-1">
+                  <Wind className="w-4 h-4 text-[#407B9E]" />
+                  <p className="text-caption text-emphasis-low">Wind</p>
+                </div>
+                <p className="text-body font-medium text-emphasis-high">
+                  {radarData.current.windSpeed}mph {getWindDirection(radarData.current.windDirection)}
+                </p>
+              </div>
+              <div className="glass rounded-xl p-3">
+                <div className="flex items-center space-x-2 mb-1">
+                  <Eye className="w-4 h-4 text-[#407B9E]" />
+                  <p className="text-caption text-emphasis-low">Visibility</p>
+                </div>
+                <p className="text-body font-medium text-emphasis-high">{radarData.current.visibility} mi</p>
+              </div>
+              <div className="glass rounded-xl p-3">
+                <div className="flex items-center space-x-2 mb-1">
+                  <Activity className="w-4 h-4 text-[#407B9E]" />
+                  <p className="text-caption text-emphasis-low">UV Index</p>
+                </div>
+                <p className="text-body font-medium text-emphasis-high">{weather.current.uvIndex}</p>
+              </div>
+            </div>
+
+            {/* Active Alerts */}
+            {radarData.alerts.length > 0 && (
+              <div className="space-y-3">
+                {radarData.alerts.map((alert, idx) => (
+                  <div key={idx} className={cn(
+                    "rounded-xl p-4 border",
+                    alert.severity === 'severe' ? 'bg-[#EF4444]/10 border-[#EF4444]/30' :
+                    alert.severity === 'moderate' ? 'bg-[#F59E0B]/10 border-[#F59E0B]/30' :
+                    'bg-[#3B82F6]/10 border-[#3B82F6]/30'
+                  )}>
+                    <div className="flex items-start space-x-3">
+                      <AlertTriangle className={cn(
+                        "w-5 h-5 mt-0.5",
+                        alert.severity === 'severe' ? 'text-[#EF4444]' :
+                        alert.severity === 'moderate' ? 'text-[#F59E0B]' :
+                        'text-[#3B82F6]'
+                      )} />
+                      <div className="flex-1">
+                        <h4 className="text-sm font-medium text-primary">{alert.type}</h4>
+                        <p className="text-xs text-muted mt-1">{alert.description}</p>
+                        <p className="text-xs text-muted/70 mt-2">
+                          Expires: {new Date(alert.expires).toLocaleTimeString('en-US', { 
+                            hour: 'numeric', 
+                            minute: '2-digit',
+                            hour12: true 
+                          })}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-xs mt-1 font-medium">{hour.chanceOfRain}%</p>
                   </div>
                 ))}
               </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'air-quality' && (
+          <div className="space-y-6">
+            {/* VOG Status */}
+            <div className={cn("rounded-2xl p-6", vogStatus.bg)}>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-medium text-primary">Air Quality Index</h3>
+                  <p className={cn("text-sm font-medium mt-1", vogStatus.color)}>{vogStatus.level}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-light gradient-text">{radarData.vog.aqi}</p>
+                  <p className="text-xs text-muted">AQI</p>
+                </div>
+              </div>
+              <p className="text-sm text-muted">{vogStatus.description}</p>
+            </div>
+
+            {/* Volcano Status */}
+            <div className="glass rounded-2xl p-4">
+              <div className="flex items-center space-x-3">
+                <div className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center",
+                  radarData.vog.volcanoStatus === 'active' ? 'bg-[#EF4444]/20' :
+                  radarData.vog.volcanoStatus === 'elevated' ? 'bg-[#F59E0B]/20' :
+                  'bg-[#10B981]/20'
+                )}>
+                  <span className="text-lg">🌋</span>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-primary">Kilauea Status</h4>
+                  <p className="text-xs text-muted capitalize">{radarData.vog.volcanoStatus}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Recommendations */}
+            <div className="glass rounded-2xl p-4">
+              <h4 className="text-sm font-medium text-primary mb-3">Today's Recommendations</h4>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 text-xs text-muted">
+                  <span>✓</span>
+                  <span>{radarData.vog.recommendation}</span>
+                </div>
+                {vogStatus.level !== 'Good' && (
+                  <>
+                    <div className="flex items-center space-x-2 text-xs text-muted">
+                      <span>✓</span>
+                      <span>Keep windows closed during peak afternoon hours</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-xs text-muted">
+                      <span>✓</span>
+                      <span>Use air conditioning when possible</span>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Forecast Tab */}
-      {activeTab === 'forecast' && (
-        <div className="space-y-4">
-          {weather.forecast.map((day, index) => (
-            <div key={index} className="glass rounded-xl p-4 flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="text-center min-w-[60px]">
-                  <p className="text-sm font-medium text-primary">{day.day}</p>
-                  <p className="text-xs text-muted">{day.date}</p>
+        {activeTab === 'forecast' && (
+          <div className="space-y-6">
+            {/* 3-Day Forecast */}
+            <div className="space-y-3">
+              {weather.forecast.slice(0, 3).map((day, idx) => (
+                <div key={idx} className="glass rounded-xl p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="text-center">
+                        <p className="text-xs text-muted">{day.day}</p>
+                        <p className="text-sm font-medium text-primary">{day.date}</p>
+                      </div>
+                      <div className="w-8 h-8">
+                        <img 
+                          src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`} 
+                          alt={day.condition}
+                          className="w-full h-full"
+                        />
+                      </div>
+                      <p className="text-sm text-primary">{day.condition}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-primary">{day.highTemp}°</p>
+                      <p className="text-xs text-muted">{day.lowTemp}°</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center">
-                  <span className="text-2xl">{day.icon}</span>
-                </div>
-                <p className="text-sm text-primary">{day.condition}</p>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 24-Hour Rain Forecast - Always visible at bottom */}
+      <div className="mt-auto pt-6 border-t border-[rgba(0,0,0,0.06)]">
+        <h4 className="text-sm font-medium text-secondary mb-3">24-Hour Rain Forecast</h4>
+        <div className="flex space-x-2 overflow-x-auto scrollbar-hide">
+          {radarData.hourly.map((hour, idx) => (
+            <div key={idx} className="flex-shrink-0 text-center">
+              <p className="text-xs text-muted mb-1">{hour.time}</p>
+              <div className="w-12 h-20 bg-gradient-to-t from-[#3B82F6]/20 to-transparent rounded-lg relative">
+                <div 
+                  className="absolute bottom-0 left-0 right-0 bg-[#3B82F6]/40 rounded-lg transition-all"
+                  style={{ height: `${formatPercentage(hour.chanceOfRain)}%` }}
+                />
+                <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs font-medium text-primary">
+                  {formatPercentage(hour.chanceOfRain)}%
+                </span>
               </div>
-              <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium text-[#DC2626]">{day.highTemp}°</span>
-                <span className="text-sm text-[#3B82F6]">{day.lowTemp}°</span>
-              </div>
+              <p className="text-xs text-muted mt-1">{Math.round(hour.temperature)}°</p>
             </div>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };

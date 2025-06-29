@@ -54,27 +54,65 @@ function generateFallbackData(neighborhood: string): RainRadarData {
   const isNorthShore = ['Haleʻiwa'].includes(neighborhood);
   const basePrecip = isWindward ? 0.05 : isNorthShore ? 0.02 : 0;
   
+  // Helper function to ensure clean percentage values - much more robust
+  const cleanPercentage = (value: number): number => {
+    // First ensure the value is within bounds
+    const bounded = Math.max(0, Math.min(100, value));
+    // Then round to nearest integer to avoid floating point precision issues
+    return Math.round(bounded);
+  };
+  
+  // Helper function to generate realistic rain chances
+  const generateRainChance = (baseChance: number, hourOffset: number): number => {
+    // Create more realistic rain patterns
+    const timeOfDay = (new Date().getHours() + hourOffset) % 24;
+    let modifier = 1;
+    
+    // Afternoon rain is more common in Hawaii
+    if (timeOfDay >= 14 && timeOfDay <= 18) {
+      modifier = 1.4;
+    }
+    // Early morning is usually drier
+    else if (timeOfDay >= 5 && timeOfDay <= 9) {
+      modifier = 0.7;
+    }
+    // Evening and night moderate chances
+    else {
+      modifier = 1;
+    }
+    
+    // Add some random variation but keep it reasonable
+    const randomVariation = (Math.random() - 0.5) * 15; // ±7.5% variation
+    const result = (baseChance * modifier) + randomVariation;
+    
+    return cleanPercentage(result);
+  };
+  
   return {
     current: {
-      precipitation: basePrecip,
+      precipitation: Math.round(basePrecip * 100) / 100, // Round to 2 decimal places
       visibility: isWindward ? 8 : 10,
       windSpeed: isWindward ? 18 : 12,
       windDirection: isWindward ? 70 : 60, // ENE for windward, NE for others
       condition: basePrecip > 0 ? 'Light Rain' : 'Partly Cloudy',
       lastUpdated: new Date().toISOString()
     },
-    hourly: Array.from({ length: 24 }, (_, i) => ({
-      time: new Date(Date.now() + i * 60 * 60 * 1000).toLocaleTimeString('en-US', { 
-        hour: 'numeric',
-        hour12: true 
-      }),
-      precipitation: Math.max(0, basePrecip + (Math.random() - 0.5) * 0.1),
-      chanceOfRain: isWindward ? 30 + Math.random() * 40 : 10 + Math.random() * 20,
-      temperature: 76 + Math.random() * 8
-    })),
+    hourly: Array.from({ length: 24 }, (_, i) => {
+      const baseChance = isWindward ? 25 : isNorthShore ? 15 : 10;
+      
+      return {
+        time: new Date(Date.now() + i * 60 * 60 * 1000).toLocaleTimeString('en-US', { 
+          hour: 'numeric',
+          hour12: true 
+        }),
+        precipitation: Math.round((basePrecip + (Math.random() - 0.5) * 0.1) * 100) / 100,
+        chanceOfRain: generateRainChance(baseChance, i),
+        temperature: Math.round((76 + Math.random() * 8) * 10) / 10
+      };
+    }),
     alerts: generateAlerts(isWindward, isNorthShore),
     vog: {
-      aqi: 35 + Math.random() * 30,
+      aqi: Math.round(35 + Math.random() * 30), // Round AQI to whole number
       level: 'Good',
       recommendation: 'Air quality is satisfactory for most people.',
       volcanoStatus: Math.random() > 0.8 ? 'elevated' : 'quiet'
