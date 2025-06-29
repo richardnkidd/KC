@@ -1,0 +1,254 @@
+import useSWR from 'swr';
+
+export interface OceanConditionsData {
+  surf: {
+    waveHeight: number; // feet
+    swellDirection: number; // degrees
+    swellPeriod: number; // seconds
+    windSpeed: number; // knots
+    windDirection: string; // compass direction
+    surfQuality: number; // 1-10 scale
+    lastUpdated: string;
+  };
+  tides: {
+    current: {
+      status: 'Rising' | 'Falling' | 'High Slack' | 'Low Slack';
+      level: number; // feet above MLLW
+      percentage: number; // 0-100 for visualization
+    };
+    upcoming: Array<{
+      type: 'High' | 'Low';
+      time: string;
+      height: number; // feet
+      timeLabel: string; // "in 2 hours"
+    }>;
+  };
+  beachSafety: {
+    bacteriaLevel: 'safe' | 'caution' | 'warning';
+    bacteriaCount: number; // CFU/100ml
+    jellyfishAlert: {
+      daysAfterFullMoon: number;
+      prediction: string;
+      riskLevel: 'low' | 'moderate' | 'high';
+    };
+    currentWarnings: Array<{
+      type: string;
+      description: string;
+      severity: 'info' | 'warning' | 'danger';
+      issuedAt: string;
+    }>;
+    wildlifeSightings: Array<{
+      animal: 'monk-seal' | 'turtle';
+      location: string;
+      timeAgo: string;
+      verified: boolean;
+    }>;
+    lifeguardStatus: {
+      onDuty: boolean;
+      towerOpen: boolean;
+      lastUpdate: string;
+    };
+  };
+  location: {
+    name: string;
+    coordinates: {
+      lat: number;
+      lng: number;
+    };
+    region: string;
+  };
+}
+
+// Calculate days since full moon for jellyfish predictions
+const getDaysAfterFullMoon = (): number => {
+  // Known full moon dates - in production, this would use a lunar calendar API
+  const knownFullMoons = [
+    new Date('2024-01-25'),
+    new Date('2024-02-24'),
+    new Date('2024-03-25'),
+    new Date('2024-04-23'),
+    new Date('2024-05-23'),
+    new Date('2024-06-22'),
+    new Date('2024-07-21'),
+    new Date('2024-08-19'),
+    new Date('2024-09-18'),
+    new Date('2024-10-17'),
+    new Date('2024-11-15'),
+    new Date('2024-12-15'),
+    new Date('2025-01-13'),
+    new Date('2025-02-12'),
+    new Date('2025-03-14'),
+    new Date('2025-04-13'),
+    new Date('2025-05-12'),
+    new Date('2025-06-11'),
+    new Date('2025-07-10'),
+  ];
+
+  const now = new Date();
+  const lastFullMoon = knownFullMoons
+    .filter(date => date <= now)
+    .sort((a, b) => b.getTime() - a.getTime())[0];
+
+  if (!lastFullMoon) return 0;
+
+  const daysDiff = Math.floor((now.getTime() - lastFullMoon.getTime()) / (1000 * 60 * 60 * 24));
+  return daysDiff;
+};
+
+const generateJellyfishPrediction = (daysAfter: number): { prediction: string; riskLevel: 'low' | 'moderate' | 'high' } => {
+  if (daysAfter >= 8 && daysAfter <= 10) {
+    return {
+      prediction: "Box jellyfish are typically most abundant around this time. Exercise extreme caution when entering the water.",
+      riskLevel: 'high'
+    };
+  } else if (daysAfter >= 6 && daysAfter <= 12) {
+    return {
+      prediction: "Moderate chance of box jellyfish presence. Check water carefully before entering.",
+      riskLevel: 'moderate'
+    };
+  } else {
+    return {
+      prediction: "Box jellyfish arrivals are less likely during this lunar phase, but always remain vigilant.",
+      riskLevel: 'low'
+    };
+  }
+};
+
+export const useOceanConditions = (beach: string = 'Ala Moana') => {
+  return useSWR<OceanConditionsData>(
+    `/api/ocean-conditions?beach=${encodeURIComponent(beach)}`,
+    {
+      refreshInterval: 900000, // Update every 15 minutes
+      revalidateOnFocus: true,
+      dedupingInterval: 300000, // 5 minutes
+      fallbackData: (() => {
+        const daysAfterFullMoon = getDaysAfterFullMoon();
+        const jellyfishPrediction = generateJellyfishPrediction(daysAfterFullMoon);
+        
+        // Simulate different conditions based on beach
+        const isNorthShore = ['Pipeline', 'Sunset Beach', 'Haleʻiwa'].includes(beach);
+        const isWindward = ['Kailua', 'Lanikai', 'Kāneʻohe'].includes(beach);
+        const isLeeward = ['Makaha', 'Pearl City'].includes(beach);
+        
+        // Generate realistic surf conditions
+        let waveHeight = 2.5;
+        let surfQuality = 6;
+        if (isNorthShore) {
+          waveHeight = Math.random() * 8 + 4; // 4-12ft
+          surfQuality = Math.floor(Math.random() * 3) + 7; // 7-10
+        } else if (isWindward) {
+          waveHeight = Math.random() * 3 + 1; // 1-4ft
+          surfQuality = Math.floor(Math.random() * 4) + 5; // 5-8
+        }
+
+        // Generate realistic bacteria levels
+        const bacteriaRisk = Math.random();
+        let bacteriaLevel: 'safe' | 'caution' | 'warning' = 'safe';
+        let bacteriaCount = 50;
+        
+        if (bacteriaRisk > 0.8) {
+          bacteriaLevel = 'warning';
+          bacteriaCount = 150;
+        } else if (bacteriaRisk > 0.6) {
+          bacteriaLevel = 'caution';
+          bacteriaCount = 100;
+        }
+
+        // Generate warnings based on conditions
+        const warnings = [];
+        if (waveHeight > 6) {
+          warnings.push({
+            type: 'High Surf Advisory',
+            description: `Surf heights of ${Math.round(waveHeight)}+ feet expected. Dangerous shore break conditions.`,
+            severity: 'warning' as const,
+            issuedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+          });
+        }
+        
+        if (bacteriaLevel === 'warning') {
+          warnings.push({
+            type: 'Water Quality Advisory',
+            description: 'Elevated bacteria levels detected. Avoid swimming if you have open wounds.',
+            severity: 'warning' as const,
+            issuedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString()
+          });
+        }
+
+        // Generate wildlife sightings
+        const wildlifeSightings = [];
+        if (Math.random() > 0.7) {
+          wildlifeSightings.push({
+            animal: Math.random() > 0.6 ? 'monk-seal' : 'turtle' as const,
+            location: `Near ${beach} ${Math.random() > 0.5 ? 'shore' : 'reef'}`,
+            timeAgo: `${Math.floor(Math.random() * 12) + 1} hours ago`,
+            verified: Math.random() > 0.3
+          });
+        }
+
+        return {
+          surf: {
+            waveHeight: Math.round(waveHeight * 10) / 10,
+            swellDirection: Math.floor(Math.random() * 360),
+            swellPeriod: Math.floor(Math.random() * 8) + 8, // 8-15 seconds
+            windSpeed: Math.floor(Math.random() * 15) + 5, // 5-20 knots
+            windDirection: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'][Math.floor(Math.random() * 8)],
+            surfQuality,
+            lastUpdated: new Date().toISOString()
+          },
+          tides: {
+            current: {
+              status: ['Rising', 'Falling', 'High Slack', 'Low Slack'][Math.floor(Math.random() * 4)] as any,
+              level: Math.round((Math.random() * 4 + 0.5) * 10) / 10, // 0.5-4.5 feet
+              percentage: Math.floor(Math.random() * 100)
+            },
+            upcoming: [
+              {
+                type: 'High' as const,
+                time: new Date(Date.now() + 3 * 60 * 60 * 1000).toLocaleTimeString('en-US', {
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  hour12: true
+                }),
+                height: Math.round((Math.random() * 1.5 + 3) * 10) / 10, // 3-4.5 feet
+                timeLabel: 'in 3 hours'
+              },
+              {
+                type: 'Low' as const,
+                time: new Date(Date.now() + 9 * 60 * 60 * 1000).toLocaleTimeString('en-US', {
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  hour12: true
+                }),
+                height: Math.round((Math.random() * 1 + 0.5) * 10) / 10, // 0.5-1.5 feet
+                timeLabel: 'in 9 hours'
+              }
+            ]
+          },
+          beachSafety: {
+            bacteriaLevel,
+            bacteriaCount,
+            jellyfishAlert: {
+              daysAfterFullMoon,
+              prediction: jellyfishPrediction.prediction,
+              riskLevel: jellyfishPrediction.riskLevel
+            },
+            currentWarnings: warnings,
+            wildlifeSightings,
+            lifeguardStatus: {
+              onDuty: Math.random() > 0.2, // 80% chance lifeguards are on duty
+              towerOpen: Math.random() > 0.1, // 90% chance tower is open during day
+              lastUpdate: new Date(Date.now() - 30 * 60 * 1000).toISOString() // 30 minutes ago
+            }
+          },
+          location: {
+            name: beach,
+            coordinates: { lat: 21.3099, lng: -157.8581 }, // Default to Honolulu
+            region: isNorthShore ? 'North Shore' : 
+                   isWindward ? 'Windward' : 
+                   isLeeward ? 'Leeward' : 'Town'
+          }
+        };
+      })()
+    }
+  );
+};

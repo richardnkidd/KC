@@ -683,7 +683,7 @@
 
   /* Enhanced main values */
   .tropical-card span[style*="font-size: 48px"],
-  .tropical-card .text-[48px] {
+  .tropical-card .text-5xl {
     font-weight: 200;
     letter-spacing: -0.02em;
     color: rgb(var(--tropical-ocean)) !important;
@@ -1482,4 +1482,99 @@ textarea::placeholder {
     rgba(33, 66, 99, 0.1) 100%
   );
   border-color: rgba(64, 123, 158, 0.3);
+}
+
+/* Ocean Conditions Card Specific Styling */
+
+/* Beach safety status indicators */
+.shorebreak-low { 
+  color: #10B981; 
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.shorebreak-moderate { 
+  color: #F59E0B; 
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.shorebreak-high { 
+  color: #EF4444; 
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.shorebreak-extreme { 
+  color: #8B2323; 
+  background: rgba(139, 35, 35, 0.15);
+  border: 1px solid rgba(139, 35, 35, 0.2);
+}
+
+/* Water quality indicators */
+.bacteria-safe {
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.bacteria-caution {
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.bacteria-warning {
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* Jellyfish risk indicators */
+.jellyfish-low {
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.1);
+  border-left: 4px solid #10B981;
+}
+
+.jellyfish-moderate {
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 4px solid #F59E0B;
+}
+
+.jellyfish-high {
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid #EF4444;
+}
+
+/* Wildlife sighting cards */
+.wildlife-sighting {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+
+.wildlife-sighting:hover {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(34, 197, 94, 0.1) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Warning alert styling */
+.safety-warning {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.08) 100%);
+  border-left: 4px solid #F59E0B;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.safety-warning-icon {
+  background: rgba(245, 158, 11, 0.2);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -8,6 +8,7 @@ import { getEventsData } from "./services/eventsService";
 import { getSunData } from "./services/sunService";
 import { getTrafficData } from "./services/trafficService";
 import { getRainRadarData } from "./services/rainRadarService";
+import { getOceanConditionsData } from "./services/oceanConditionsService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Add proper MIME type handling for JS modules
@@ -158,6 +159,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Rain Radar API error:', error);
       res.status(500).json({ 
         error: 'Failed to fetch rain radar data',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Ocean conditions endpoint
+  app.get("/api/ocean-conditions", async (req, res) => {
+    const beach = req.query.beach as string || 'Ala Moana';
+    try {
+      const oceanData = await getOceanConditionsData(beach);
+      res.json(oceanData);
+    } catch (error) {
+      console.error('Ocean conditions API error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch ocean conditions data',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }
