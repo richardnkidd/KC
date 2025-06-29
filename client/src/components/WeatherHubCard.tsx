@@ -1,0 +1,367 @@
+import React, { useState } from 'react';
+import { Sun, Cloud, CloudRain, CloudDrizzle, MapPin, ChevronDown, AlertTriangle, Activity, Eye, Wind, Droplets, TrendingUp } from 'lucide-react';
+import { useWeather } from '../hooks/useWeather';
+import { useRainRadar } from '../hooks/useRainRadar';
+import { cn } from '@/lib/utils';
+
+// O'ahu neighborhood coordinates
+const OAHU_NEIGHBORHOODS = {
+  "Honolulu": { lat: 21.3099, lng: -157.8581, region: "Urban Core" },
+  "Waikīkī": { lat: 21.2793, lng: -157.8293, region: "Town" },
+  "Mānoa": { lat: 21.3157, lng: -157.8025, region: "Valley" },
+  "Kailua": { lat: 21.4022, lng: -157.7394, region: "Windward" },
+  "Haleʻiwa": { lat: 21.5933, lng: -158.1039, region: "North Shore" },
+  "Kāneʻohe": { lat: 21.4389, lng: -157.7623, region: "Windward" },
+  "Pearl City": { lat: 21.3972, lng: -157.9736, region: "Leeward" },
+  "Diamond Head": { lat: 21.2642, lng: -157.8073, region: "Town" },
+  "Makaha": { lat: 21.4692, lng: -158.2208, region: "Leeward Coast" },
+  "Koko Head": { lat: 21.2777, lng: -157.6877, region: "Southeast" }
+} as const;
+
+const getWeatherIcon = (condition: string) => {
+  const lower = condition.toLowerCase();
+  if (lower.includes('rain') || lower.includes('shower')) return CloudRain;
+  if (lower.includes('drizzle')) return CloudDrizzle;
+  if (lower.includes('cloud')) return Cloud;
+  return Sun;
+};
+
+export const WeatherHubCard: React.FC = () => {
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState('Honolulu');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'radar' | 'forecast'>('overview');
+
+  const { data: weather, isLoading: weatherLoading, error: weatherError } = useWeather();
+  const { data: radarData, isLoading: radarLoading, error: radarError } = useRainRadar(selectedNeighborhood);
+
+  const isLoading = weatherLoading || radarLoading;
+  const error = weatherError || radarError;
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <div className="w-16 h-16 rounded-2xl bg-[#8B2323]/10 flex items-center justify-center mx-auto mb-4">
+          <CloudRain className="w-8 h-8 text-[#8B2323]" />
+        </div>
+        <p className="text-base font-medium text-primary">Weather Data Unavailable</p>
+        <p className="text-sm text-muted mt-1">Unable to fetch weather information</p>
+      </div>
+    );
+  }
+
+  if (isLoading || !weather || !radarData) {
+    return (
+      <div className="animate-pulse">
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="w-12 h-12 bg-[#2D2D2B]/30 rounded-2xl"></div>
+          <div className="space-y-2">
+            <div className="h-6 bg-[#2D2D2B]/30 rounded-xl w-32"></div>
+            <div className="h-4 bg-[#2D2D2B]/20 rounded-xl w-24"></div>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="h-32 bg-[#2D2D2B]/30 rounded-2xl"></div>
+          <div className="h-32 bg-[#2D2D2B]/30 rounded-2xl"></div>
+        </div>
+        <div className="h-20 bg-[#2D2D2B]/30 rounded-2xl"></div>
+      </div>
+    );
+  }
+
+  const WeatherIcon = getWeatherIcon(weather.current.condition);
+  
+  const getCurrentCondition = () => {
+    const precip = radarData.current.precipitation;
+    if (precip === 0) return { text: 'Clear', color: 'text-[#10B981]', icon: '☀️' };
+    if (precip < 0.1) return { text: 'Light Rain', color: 'text-[#3B82F6]', icon: '🌦️' };
+    if (precip < 0.5) return { text: 'Moderate Rain', color: 'text-[#F59E0B]', icon: '🌧️' };
+    return { text: 'Heavy Rain', color: 'text-[#EF4444]', icon: '⛈️' };
+  };
+
+  const getWindDirection = (degrees: number) => {
+    const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 
+                      'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    return directions[Math.round(degrees / 22.5) % 16];
+  };
+
+  const condition = getCurrentCondition();
+
+  return (
+    <div>
+      {/* Header with Location Selector */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-4">
+          <div className="relative animate-float">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#667eea] to-[#764ba2]"></div>
+              <WeatherIcon className="w-6 h-6 text-white relative z-10" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <h2 className="text-h2 font-display text-emphasis-high">Weather Hub</h2>
+            
+            {/* Neighborhood Selector */}
+            <div className="relative mt-1">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 text-small text-emphasis-medium hover:text-emphasis-high transition-colors group"
+              >
+                <MapPin className="w-3 h-3" />
+                <span>{selectedNeighborhood}</span>
+                <ChevronDown className={cn(
+                  "w-3 h-3 transition-transform",
+                  isDropdownOpen && "rotate-180"
+                )} />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setIsDropdownOpen(false)}
+                  />
+                  <div className="absolute top-full mt-2 w-64 bg-white rounded-2xl shadow-lg border border-[rgba(0,0,0,0.06)] overflow-hidden z-50">
+                    <div className="max-h-64 overflow-y-auto">
+                      {Object.entries(
+                        Object.entries(OAHU_NEIGHBORHOODS).reduce((acc, [name, info]) => {
+                          if (!acc[info.region]) acc[info.region] = [];
+                          acc[info.region].push(name);
+                          return acc;
+                        }, {} as Record<string, string[]>)
+                      ).map(([region, neighborhoods]) => (
+                        <div key={region}>
+                          <div className="px-4 py-2 text-xs font-medium text-[#333333]/50 bg-[#F5FAF8]">
+                            {region}
+                          </div>
+                          {neighborhoods.map((neighborhood) => (
+                            <button
+                              key={neighborhood}
+                              onClick={() => {
+                                setSelectedNeighborhood(neighborhood);
+                                setIsDropdownOpen(false);
+                              }}
+                              className={cn(
+                                "w-full text-left px-4 py-2 text-sm hover:bg-[#F5FAF8] transition-colors",
+                                selectedNeighborhood === neighborhood && "bg-[#EEE0C9]/30 text-[#214263] font-medium"
+                              )}
+                            >
+                              {neighborhood}
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="text-right">
+          <p className="text-caption text-emphasis-low">Live Status</p>
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+            <span className="text-xs text-muted">Real-time</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="flex space-x-1 mb-6 p-1 bg-[rgba(0,0,0,0.04)] rounded-2xl">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={cn(
+            "flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all",
+            activeTab === 'overview' 
+              ? "bg-white text-[#214263] shadow-sm" 
+              : "text-[#333333]/60 hover:text-[#333333]/80"
+          )}
+        >
+          Overview
+        </button>
+        <button
+          onClick={() => setActiveTab('radar')}
+          className={cn(
+            "flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all",
+            activeTab === 'radar' 
+              ? "bg-white text-[#214263] shadow-sm" 
+              : "text-[#333333]/60 hover:text-[#333333]/80"
+          )}
+        >
+          Rain Radar
+        </button>
+        <button
+          onClick={() => setActiveTab('forecast')}
+          className={cn(
+            "flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-all",
+            activeTab === 'forecast' 
+              ? "bg-white text-[#214263] shadow-sm" 
+              : "text-[#333333]/60 hover:text-[#333333]/80"
+          )}
+        >
+          Forecast
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'overview' && (
+        <div className="space-y-6">
+          {/* Current Conditions - Side by Side */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Temperature */}
+            <div className="glass rounded-2xl p-4">
+              <div className="text-center">
+                <span className="font-light gradient-text" style={{ fontSize: '36px' }}>{weather.current.temp}°</span>
+                <p className="text-body text-emphasis-high mt-1">{weather.current.condition}</p>
+                <p className="text-small text-emphasis-low">Feels like {weather.current.feelsLike}°F</p>
+              </div>
+            </div>
+
+            {/* Precipitation */}
+            <div className="glass rounded-2xl p-4">
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <span className="text-2xl">{condition.icon}</span>
+                  <span className="font-light gradient-text" style={{ fontSize: '24px' }}>{radarData.current.precipitation}"</span>
+                </div>
+                <p className={cn("text-body font-medium", condition.color)}>{condition.text}</p>
+                <p className="text-small text-emphasis-low">per hour</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Detailed Metrics */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="glass rounded-xl p-3">
+              <div className="flex items-center space-x-2 mb-1">
+                <Droplets className="w-4 h-4 text-[#407B9E]" />
+                <p className="text-caption text-emphasis-low">Humidity</p>
+              </div>
+              <p className="text-body font-medium text-emphasis-high">{weather.current.humidity}%</p>
+            </div>
+            <div className="glass rounded-xl p-3">
+              <div className="flex items-center space-x-2 mb-1">
+                <Wind className="w-4 h-4 text-[#407B9E]" />
+                <p className="text-caption text-emphasis-low">Wind</p>
+              </div>
+              <p className="text-body font-medium text-emphasis-high">
+                {radarData.current.windSpeed}mph {getWindDirection(radarData.current.windDirection)}
+              </p>
+            </div>
+            <div className="glass rounded-xl p-3">
+              <div className="flex items-center space-x-2 mb-1">
+                <Eye className="w-4 h-4 text-[#407B9E]" />
+                <p className="text-caption text-emphasis-low">Visibility</p>
+              </div>
+              <p className="text-body font-medium text-emphasis-high">{radarData.current.visibility} mi</p>
+            </div>
+            <div className="glass rounded-xl p-3">
+              <div className="flex items-center space-x-2 mb-1">
+                <Sun className="w-4 h-4 text-[#EADDCA]" />
+                <p className="text-caption text-emphasis-low">UV Index</p>
+              </div>
+              <p className="text-body font-medium text-emphasis-high">{weather.current.uvIndex}</p>
+            </div>
+          </div>
+
+          {/* Alerts */}
+          {radarData.alerts.length > 0 && (
+            <div className="glass rounded-2xl p-4 border-l-4 border-[#F59E0B]">
+              <h3 className="text-sm font-medium text-secondary mb-3 flex items-center">
+                <AlertTriangle className="w-4 h-4 mr-2 text-[#F59E0B]" />
+                Active Alerts
+              </h3>
+              <div className="space-y-2">
+                {radarData.alerts.slice(0, 2).map((alert, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#F59E0B]/20 flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs">!</span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-primary">{alert.type}</p>
+                      <p className="text-xs text-muted mt-1">{alert.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Rain Radar Tab */}
+      {activeTab === 'radar' && (
+        <div className="space-y-6">
+          {/* VOG Levels */}
+          <div className="glass rounded-2xl p-4">
+            <h3 className="text-sm font-medium text-secondary mb-3 flex items-center">
+              <Activity className="w-4 h-4 mr-2 text-[#10B981]" />
+              VOG & Air Quality
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-caption text-emphasis-low mb-1">Air Quality Index</p>
+                <div className="flex items-baseline space-x-2">
+                  <span className="text-2xl font-light text-[#10B981]">{Math.round(radarData.vog.aqi)}</span>
+                  <span className="text-sm text-[#10B981]">{radarData.vog.level}</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-caption text-emphasis-low mb-1">Volcano Status</p>
+                <p className="text-body font-medium capitalize">{radarData.vog.volcanoStatus}</p>
+              </div>
+            </div>
+            <p className="text-xs text-muted mt-3">{radarData.vog.recommendation}</p>
+          </div>
+
+          {/* Hourly Rain Forecast */}
+          <div className="glass rounded-2xl p-4">
+            <h3 className="text-sm font-medium text-secondary mb-3">24-Hour Rain Forecast</h3>
+            <div className="overflow-x-auto -mx-4 px-4">
+              <div className="flex space-x-3 pb-2">
+                {radarData.hourly.slice(0, 12).map((hour, index) => (
+                  <div key={index} className="flex flex-col items-center min-w-[60px]">
+                    <p className="text-xs text-muted mb-1">{hour.time}</p>
+                    <div className="w-full bg-[rgba(0,0,0,0.1)] rounded-full h-12 relative overflow-hidden">
+                      <div 
+                        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#3B82F6] to-[#60A5FA] transition-all duration-300"
+                        style={{ height: `${hour.chanceOfRain}%` }}
+                      />
+                    </div>
+                    <p className="text-xs mt-1 font-medium">{hour.chanceOfRain}%</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Forecast Tab */}
+      {activeTab === 'forecast' && (
+        <div className="space-y-4">
+          {weather.forecast.map((day, index) => (
+            <div key={index} className="glass rounded-xl p-4 flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="text-center min-w-[60px]">
+                  <p className="text-sm font-medium text-primary">{day.day}</p>
+                  <p className="text-xs text-muted">{day.date}</p>
+                </div>
+                <div className="w-10 h-10 flex items-center justify-center">
+                  <span className="text-2xl">{day.icon}</span>
+                </div>
+                <p className="text-sm text-primary">{day.condition}</p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className="text-sm font-medium text-[#DC2626]">{day.highTemp}°</span>
+                <span className="text-sm text-[#3B82F6]">{day.lowTemp}°</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

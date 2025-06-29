@@ -1,0 +1,221 @@
+import React, { useState } from 'react';
+import { ChevronDown, Car, Sun, Film, Calendar, Clock, ChevronRight } from 'lucide-react';
+import { TrafficCard } from './TrafficCard';
+import { SunCard } from './SunCard';
+import { MoviesCard } from './MoviesCard';
+import { EventsCard } from './EventsCard';
+import { cn } from '@/lib/utils';
+
+interface ExpandableSectionProps {
+  title: string;
+  icon: React.ReactNode;
+  preview: React.ReactNode;
+  children: React.ReactNode;
+  defaultExpanded?: boolean;
+  accentColor?: string;
+}
+
+const ExpandableSection: React.FC<ExpandableSectionProps> = ({
+  title,
+  icon,
+  preview,
+  children,
+  defaultExpanded = false,
+  accentColor = 'from-[#407B9E] to-[#214263]'
+}) => {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+
+  return (
+    <div className="tropical-card overflow-hidden">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full p-0 bg-transparent border-none"
+      >
+        <div className="flex items-center justify-between p-6 hover:bg-[rgba(0,0,0,0.02)] transition-colors">
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden bg-gradient-to-br ${accentColor}`}>
+                <div className="text-white relative z-10">
+                  {icon}
+                </div>
+              </div>
+            </div>
+            <div className="text-left">
+              <h3 className="text-h2 font-display text-emphasis-high">{title}</h3>
+              {!isExpanded && (
+                <div className="text-small text-emphasis-medium mt-1">
+                  {preview}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            {!isExpanded && (
+              <span className="text-xs text-muted hidden sm:block">Tap to expand</span>
+            )}
+            <ChevronDown className={cn(
+              "w-6 h-6 text-[#407B9E] transition-transform duration-300",
+              isExpanded && "rotate-180"
+            )} />
+          </div>
+        </div>
+      </button>
+
+      {/* Expandable Content */}
+      <div className={cn(
+        "transition-all duration-300 ease-in-out overflow-hidden",
+        isExpanded ? "opacity-100" : "opacity-0 max-h-0"
+      )}>
+        <div className={cn(
+          "px-6 pb-6 transition-all duration-300",
+          isExpanded ? "max-h-[2000px]" : "max-h-0"
+        )}>
+          <div className="border-t border-[rgba(0,0,0,0.06)] pt-6">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const ExpandableSections: React.FC = () => {
+  // Quick preview components for collapsed state
+  const TrafficPreview = () => (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm">H-1 Eastbound</span>
+      <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-700">
+        25 min delay
+      </span>
+    </div>
+  );
+
+  const SunPreview = () => (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm">Sunrise 6:42 AM</span>
+      <span className="text-sm text-muted">•</span>
+      <span className="text-sm">Sunset 7:15 PM</span>
+    </div>
+  );
+
+  const MoviesPreview = () => (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm">4 movies showing</span>
+      <span className="text-sm text-muted">•</span>
+      <span className="text-sm">Next: 7:30 PM</span>
+    </div>
+  );
+
+  const EventsPreview = () => (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm">3 events this weekend</span>
+      <span className="text-sm text-muted">•</span>
+      <span className="text-sm">Art show tonight</span>
+    </div>
+  );
+
+  return (
+    <div className="space-y-4">
+      {/* Island Life Section */}
+      <ExpandableSection
+        title="Island Life"
+        icon={<Car className="w-6 h-6" />}
+        preview={<TrafficPreview />}
+        accentColor="from-[#DC2626] to-[#F59E0B]"
+      >
+        <div className="space-y-6">
+          {/* Traffic */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Car className="w-4 h-4 mr-2" />
+              Current Traffic
+            </h4>
+            <TrafficCard />
+          </div>
+          
+          {/* Sun Times */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Sun className="w-4 h-4 mr-2" />
+              Photography Times
+            </h4>
+            <SunCard />
+          </div>
+        </div>
+      </ExpandableSection>
+
+      {/* Entertainment Section */}
+      <ExpandableSection
+        title="This Weekend"
+        icon={<Calendar className="w-6 h-6" />}
+        preview={<EventsPreview />}
+        accentColor="from-[#9B59B6] to-[#6C5CE7]"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Movies */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Film className="w-4 h-4 mr-2" />
+              Movie Showtimes
+            </h4>
+            <MoviesCard />
+          </div>
+          
+          {/* Events */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Calendar className="w-4 h-4 mr-2" />
+              Local Events
+            </h4>
+            <EventsCard />
+          </div>
+        </div>
+      </ExpandableSection>
+
+      {/* Quick Actions Bar */}
+      <div className="tropical-card p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium text-secondary">Quick Links</h3>
+          <span className="text-xs text-muted">Tap to open</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+          <button 
+            className="flex items-center space-x-2 p-3 rounded-xl glass hover:bg-[#407B9E]/10 transition-colors group"
+            onClick={() => window.open('https://traffic.hawaii.gov/', '_blank')}
+          >
+            <Car className="w-4 h-4 text-[#DC2626]" />
+            <span className="text-sm font-medium text-primary">Live Traffic</span>
+            <ChevronRight className="w-3 h-3 text-muted group-hover:text-primary transition-colors" />
+          </button>
+          
+          <button 
+            className="flex items-center space-x-2 p-3 rounded-xl glass hover:bg-[#407B9E]/10 transition-colors group"
+            onClick={() => window.open('https://www.photoephemeris.com/', '_blank')}
+          >
+            <Sun className="w-4 h-4 text-[#F59E0B]" />
+            <span className="text-sm font-medium text-primary">Photo Times</span>
+            <ChevronRight className="w-3 h-3 text-muted group-hover:text-primary transition-colors" />
+          </button>
+          
+          <button 
+            className="flex items-center space-x-2 p-3 rounded-xl glass hover:bg-[#407B9E]/10 transition-colors group"
+            onClick={() => window.open('https://www.fandango.com/', '_blank')}
+          >
+            <Film className="w-4 h-4 text-[#9B59B6]" />
+            <span className="text-sm font-medium text-primary">Buy Tickets</span>
+            <ChevronRight className="w-3 h-3 text-muted group-hover:text-primary transition-colors" />
+          </button>
+          
+          <button 
+            className="flex items-center space-x-2 p-3 rounded-xl glass hover:bg-[#407B9E]/10 transition-colors group"
+            onClick={() => window.open('https://www.eventbrite.com/', '_blank')}
+          >
+            <Calendar className="w-4 h-4 text-[#FF9800]" />
+            <span className="text-sm font-medium text-primary">Find Events</span>
+            <ChevronRight className="w-3 h-3 text-muted group-hover:text-primary transition-colors" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

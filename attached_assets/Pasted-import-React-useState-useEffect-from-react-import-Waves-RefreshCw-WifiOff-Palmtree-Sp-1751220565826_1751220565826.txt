@@ -5,7 +5,6 @@ import { OceanConditionsCard } from '../components/OceanConditionsCard';
 import { ExpandableSections } from '../components/ExpandableSections';
 import { mutate } from 'swr';
 import { useToast } from '../hooks/use-toast';
-import logoPath from '@assets/logo.png';
 
 export default function Home() {
   const [lastUpdated, setLastUpdated] = useState<string>('');
@@ -101,7 +100,7 @@ export default function Home() {
               <div className="relative group">
                 <div className="header-logo rounded-2xl flex items-center justify-center overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#407B9E]/10 to-[#214263]/5"></div>
-                  <img src={logoPath} alt="Kamaʻāina Compass" className="w-full h-full relative z-10 p-1" />
+                  <Waves className="w-7 h-7 text-[#214263] relative z-10 animate-wave" />
                 </div>
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#407B9E]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
