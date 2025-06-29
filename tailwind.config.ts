@@ -172,6 +172,7 @@ export default {
         'pulse-enhanced': 'pulse 2s ease-in-out infinite',
         'bounce-enhanced': 'bounce 1000ms cubic-bezier(0.34, 1.56, 0.64, 1)',
         'loading': 'loading 1.5s ease-in-out infinite',
+        'spin-slow': 'spin 3s linear infinite',
       },
       transitionTimingFunction: {
         'bounce': 'cubic-bezier(0.34, 1.56, 0.64, 1)',

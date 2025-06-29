@@ -10,11 +10,14 @@ import { TrafficCard } from '../components/TrafficCard';
 import { RainRadarCard } from '../components/RainRadarCard';
 import { mutate } from 'swr';
 import { useToast } from '../hooks/use-toast';
+import logoPath from "@assets/logo.png";
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export default function Home() {
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -26,6 +29,11 @@ export default function Home() {
 
     updateLastUpdated();
     const interval = setInterval(updateLastUpdated, 60000);
+
+    // Hide loading spinner after initial load
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, []);
@@ -86,6 +94,10 @@ export default function Home() {
     }
   };
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="relative">
       {/* Decorative wave patterns - absolute on mobile */}
@@ -105,7 +117,7 @@ export default function Home() {
               <div className="relative group">
                 <div className="header-logo rounded-2xl flex items-center justify-center overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#407B9E]/10 to-[#214263]/5"></div>
-                  <Waves className="w-7 h-7 text-[#214263] relative z-10 animate-wave" />
+                  <img src={logoPath} alt="Kamaʻāina Compass" className="w-10 h-10 relative z-10" />
                 </div>
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#407B9E]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
