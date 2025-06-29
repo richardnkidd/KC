@@ -1,0 +1,931 @@
+import React, { useState } from 'react';
+import { ChevronDown, Car, Sun, Film, Calendar, Clock, ChevronRight, MapPin, Camera, Compass, Navigation, AlertTriangle, Coffee, ShoppingBag, Waves, Mountain, Utensils, Phone, Wifi, DollarSign, Star, Heart, Truck, Music, TreePine } from 'lucide-react';
+import { TrafficCard } from './TrafficCard';
+import { SunCard } from './SunCard';
+import { MoviesCard } from './MoviesCard';
+import { EventsCard } from './EventsCard';
+import { cn } from '@/lib/utils';
+
+interface ExpandableSectionProps {
+  title: string;
+  icon: React.ReactNode;
+  preview: React.ReactNode;
+  children: React.ReactNode;
+  defaultExpanded?: boolean;
+  accentColor?: string;
+}
+
+const ExpandableSection: React.FC<ExpandableSectionProps> = ({
+  title,
+  icon,
+  preview,
+  children,
+  defaultExpanded = false,
+  accentColor = 'from-[#407B9E] to-[#214263]'
+}) => {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+
+  return (
+    <div className="tropical-card overflow-hidden">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full p-0 bg-transparent border-none"
+      >
+        <div className="flex items-center justify-between p-6 hover:bg-[rgba(0,0,0,0.02)] transition-colors">
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden bg-gradient-to-br ${accentColor}`}>
+                <div className="text-white relative z-10">
+                  {icon}
+                </div>
+              </div>
+            </div>
+            <div className="text-left">
+              <h3 className="text-h2 font-display text-emphasis-high">{title}</h3>
+              {!isExpanded && (
+                <div className="text-small text-emphasis-medium mt-1">
+                  {preview}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            {!isExpanded && (
+              <span className="text-xs text-muted hidden sm:block">Tap to expand</span>
+            )}
+            <ChevronDown className={cn(
+              "w-6 h-6 text-[#407B9E] transition-transform duration-300",
+              isExpanded && "rotate-180"
+            )} />
+          </div>
+        </div>
+      </button>
+
+      {/* Expandable Content */}
+      <div className={cn(
+        "transition-all duration-300 ease-in-out overflow-hidden",
+        isExpanded ? "opacity-100" : "opacity-0 max-h-0"
+      )}>
+        <div className={cn(
+          "px-6 pb-6 transition-all duration-300",
+          isExpanded ? "max-h-[3000px]" : "max-h-0"
+        )}>
+          <div className="border-t border-[rgba(0,0,0,0.06)] pt-6">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const ExpandableSections: React.FC = () => {
+  // Quick preview components for collapsed state
+  const TrafficPreview = () => (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm">H-1 Eastbound</span>
+      <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-700">
+        25 min delay
+      </span>
+    </div>
+  );
+
+  const SunPreview = () => (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm">Sunrise 6:42 AM</span>
+      <span className="text-sm text-muted">•</span>
+      <span className="text-sm">Sunset 7:15 PM</span>
+    </div>
+  );
+
+  const MoviesPreview = () => (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm">4 movies showing</span>
+      <span className="text-sm text-muted">•</span>
+      <span className="text-sm">Next: 7:30 PM</span>
+    </div>
+  );
+
+  const EventsPreview = () => (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm">3 events this weekend</span>
+      <span className="text-sm text-muted">•</span>
+      <span className="text-sm">Art show tonight</span>
+    </div>
+  );
+
+  return (
+    <div className="space-y-4">
+      {/* Island Life Section - Enhanced with comprehensive island information */}
+      <ExpandableSection
+        title="Island Life"
+        icon={<Car className="w-6 h-6" />}
+        preview={<TrafficPreview />}
+        accentColor="from-[#DC2626] to-[#F59E0B]"
+      >
+        <div className="space-y-6">
+          {/* Traffic */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Car className="w-4 h-4 mr-2" />
+              Current Traffic
+            </h4>
+            <TrafficCard />
+          </div>
+          
+          {/* Sun Times */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Sun className="w-4 h-4 mr-2" />
+              Photography Times
+            </h4>
+            <SunCard />
+          </div>
+
+          {/* Popular Spots - Enhanced with more details */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <MapPin className="w-4 h-4 mr-2" />
+              Popular Spots Today
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="glass rounded-xl p-4 hover:bg-[rgba(0,0,0,0.02)] transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 flex items-center justify-center">
+                    <span className="text-lg">🏖️</span>
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="text-sm font-medium text-primary">Lanikai Beach</h5>
+                    <p className="text-xs text-muted">Perfect conditions • 2-3ft surf</p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">Excellent</span>
+                      <span className="text-xs text-muted">•</span>
+                      <span className="text-xs text-muted">30 min drive</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4 hover:bg-[rgba(0,0,0,0.02)] transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/20 flex items-center justify-center">
+                    <span className="text-lg">🥾</span>
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="text-sm font-medium text-primary">Diamond Head</h5>
+                    <p className="text-xs text-muted">Great for sunrise • Clear views</p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">Moderate</span>
+                      <span className="text-xs text-muted">•</span>
+                      <span className="text-xs text-muted">15 min drive</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4 hover:bg-[rgba(0,0,0,0.02)] transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#3B82F6]/20 flex items-center justify-center">
+                    <span className="text-lg">🛍️</span>
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="text-sm font-medium text-primary">Ala Moana Center</h5>
+                    <p className="text-xs text-muted">Shopping & dining • AC comfort</p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className="text-xs bg-[#3B82F6]/20 text-[#3B82F6] px-2 py-0.5 rounded-full">Indoor</span>
+                      <span className="text-xs text-muted">•</span>
+                      <span className="text-xs text-muted">10 min drive</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4 hover:bg-[rgba(0,0,0,0.02)] transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#8B5CF6]/20 flex items-center justify-center">
+                    <span className="text-lg">🌺</span>
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="text-sm font-medium text-primary">Lyon Arboretum</h5>
+                    <p className="text-xs text-muted">Cool & shaded • Easy walk</p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className="text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">Peaceful</span>
+                      <span className="text-xs text-muted">•</span>
+                      <span className="text-xs text-muted">25 min drive</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Local Tips - Enhanced with more practical advice */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Compass className="w-4 h-4 mr-2" />
+              Local Tips
+            </h4>
+            <div className="space-y-3">
+              <div className="glass rounded-xl p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#10B981]/20 flex items-center justify-center flex-shrink-0">
+                    <Coffee className="w-4 h-4 text-[#10B981]" />
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-medium text-primary">Morning Coffee Run</h5>
+                    <p className="text-xs text-muted mt-1">
+                      Beat the crowds at Leonard's Bakery (6:30 AM) for fresh malasadas, 
+                      then grab coffee at Morning Glass Coffee + Cafe.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/20 flex items-center justify-center flex-shrink-0">
+                    <AlertTriangle className="w-4 h-4 text-[#F59E0B]" />
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-medium text-primary">Parking Alert</h5>
+                    <p className="text-xs text-muted mt-1">
+                      Ala Moana Beach Park gets crowded after 10 AM on weekends. 
+                      Arrive early or consider the paid lot at Magic Island.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#3B82F6]/20 flex items-center justify-center flex-shrink-0">
+                    <Camera className="w-4 h-4 text-[#3B82F6]" />
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-medium text-primary">Photo Spot</h5>
+                    <p className="text-xs text-muted mt-1">
+                      Golden hour at Tantalus Lookout offers incredible city and ocean views. 
+                      Arrive 30 minutes before sunset for the best shots.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Surf & Ocean Conditions - New comprehensive section */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Waves className="w-4 h-4 mr-2" />
+              Surf & Ocean Conditions
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <span className="text-lg mr-2">🏄‍♂️</span>
+                  South Shore
+                </h5>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-medium">Waikiki</span>
+                    <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">2-3ft</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-medium">Ala Moana Bowls</span>
+                    <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">3-4ft</span>
+                  </div>
+                  <p className="text-xs text-muted pt-2">Light onshore winds • Good for beginners</p>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <span className="text-lg mr-2">🌊</span>
+                  North Shore
+                </h5>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-medium">Pipeline</span>
+                    <span className="text-xs bg-[#EF4444]/20 text-[#EF4444] px-2 py-0.5 rounded-full">6-8ft</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-medium">Sunset Beach</span>
+                    <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">4-6ft</span>
+                  </div>
+                  <p className="text-xs text-muted pt-2">Offshore winds • Advanced surfers only</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 glass rounded-xl p-4">
+              <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                <span className="text-lg mr-2">🌡️</span>
+                Ocean Safety
+              </h5>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="text-center">
+                  <p className="text-xs text-muted mb-1">Water Temp</p>
+                  <p className="text-sm font-medium text-primary">78°F</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted mb-1">UV Index</p>
+                  <p className="text-sm font-medium text-[#F59E0B]">High (8)</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted mb-1">Visibility</p>
+                  <p className="text-sm font-medium text-primary">50ft+</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted mb-1">Jellyfish</p>
+                  <p className="text-sm font-medium text-[#10B981]">Low Risk</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Essential Services - New practical section */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Phone className="w-4 h-4 mr-2" />
+              Essential Services
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="glass rounded-xl p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <span className="text-lg">🏥</span>
+                  <h5 className="text-sm font-medium text-primary">Healthcare</h5>
+                </div>
+                <div className="text-xs space-y-1">
+                  <p><strong>Queen's Medical:</strong> 808-538-9011</p>
+                  <p><strong>Urgent Care Plus:</strong> 808-983-2845</p>
+                  <p className="text-muted">24/7 emergency services available</p>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Truck className="w-4 h-4 text-[#3B82F6]" />
+                  <h5 className="text-sm font-medium text-primary">Transportation</h5>
+                </div>
+                <div className="text-xs space-y-1">
+                  <p><strong>TheBus:</strong> Real-time tracking app</p>
+                  <p><strong>Uber/Lyft:</strong> 5-15 min pickup</p>
+                  <p className="text-muted">Express bus to airport available</p>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <ShoppingBag className="w-4 h-4 text-[#10B981]" />
+                  <h5 className="text-sm font-medium text-primary">Groceries</h5>
+                </div>
+                <div className="text-xs space-y-1">
+                  <p><strong>Foodland:</strong> Open until 11 PM</p>
+                  <p><strong>Target:</strong> Everyday essentials</p>
+                  <p className="text-muted">ABC Stores for quick snacks</p>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Wifi className="w-4 h-4 text-[#8B5CF6]" />
+                  <h5 className="text-sm font-medium text-primary">WiFi & Tech</h5>
+                </div>
+                <div className="text-xs space-y-1">
+                  <p><strong>Apple Store:</strong> Ala Moana Center</p>
+                  <p><strong>Free WiFi:</strong> All Starbucks locations</p>
+                  <p className="text-muted">Public WiFi at beaches & parks</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ExpandableSection>
+
+      {/* This Weekend Section - Massively enhanced with comprehensive entertainment guide */}
+      <ExpandableSection
+        title="This Weekend"
+        icon={<Calendar className="w-6 h-6" />}
+        preview={<EventsPreview />}
+        accentColor="from-[#9B59B6] to-[#6C5CE7]"
+      >
+        <div className="space-y-6">
+          {/* Movies */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Film className="w-4 h-4 mr-2" />
+              Movie Showtimes
+            </h4>
+            <MoviesCard />
+          </div>
+          
+          {/* Events */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Calendar className="w-4 h-4 mr-2" />
+              Local Events
+            </h4>
+            <EventsCard />
+          </div>
+
+          {/* Food & Dining - Enhanced with more options */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <span className="text-lg mr-2">🍽️</span>
+              Weekend Dining Guide
+            </h4>
+            <div className="space-y-4">
+              {/* Breakfast/Brunch */}
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <span className="text-lg mr-2">🌅</span>
+                  Breakfast & Brunch Favorites
+                </h5>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-medium">Koko Head Cafe</p>
+                        <p className="text-xs text-muted">Island-style brunch • Reservations recommended</p>
+                        <p className="text-xs text-muted">📍 Kaimuki • $$ • 8 AM - 2 PM</p>
+                      </div>
+                      <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">Popular</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-medium">Musubi Cafe Iyasume</p>
+                        <p className="text-xs text-muted">Local comfort food • Great for early morning</p>
+                        <p className="text-xs text-muted">📍 Multiple locations • $ • 24/7</p>
+                      </div>
+                      <span className="text-xs bg-[#3B82F6]/20 text-[#3B82F6] px-2 py-0.5 rounded-full">Open Late</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-medium">Bogart's Cafe</p>
+                        <p className="text-xs text-muted">Huge portions • Local institution since 1979</p>
+                        <p className="text-xs text-muted">📍 Ala Moana • $ • 6 AM - 2 PM</p>
+                      </div>
+                      <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">Value</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-medium">Heavenly Island Lifestyle</p>
+                        <p className="text-xs text-muted">Healthy acai bowls • Instagram-worthy</p>
+                        <p className="text-xs text-muted">📍 Lanikai • $$ • 7 AM - 4 PM</p>
+                      </div>
+                      <span className="text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">Healthy</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Lunch & Dinner */}
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <span className="text-lg mr-2">🌮</span>
+                  Lunch & Dinner Highlights
+                </h5>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-medium">Helena's Hawaiian Food</p>
+                        <p className="text-xs text-muted">Authentic local plates • James Beard Award</p>
+                        <p className="text-xs text-muted">📍 Kalihi • $ • Tue-Fri 10 AM - 7:30 PM</p>
+                      </div>
+                      <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">Cash Only</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-medium">Giovanni's Shrimp Truck</p>
+                        <p className="text-xs text-muted">North Shore classic • Worth the drive</p>
+                        <p className="text-xs text-muted">📍 Haleiwa • $$ • 11 AM - 7 PM</p>
+                      </div>
+                      <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">Must Try</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-medium">La Mer at Halekulani</p>
+                        <p className="text-xs text-muted">Fine dining • Ocean views • Dress code</p>
+                        <p className="text-xs text-muted">📍 Waikiki • $$$$ • 6 PM - 9:30 PM</p>
+                      </div>
+                      <span className="text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">Luxury</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs font-medium">Rainbow Drive-In</p>
+                        <p className="text-xs text-muted">Mixed plate lunches • Local institution</p>
+                        <p className="text-xs text-muted">📍 Kapahulu • $ • 7 AM - 9 PM</p>
+                      </div>
+                      <span className="text-xs bg-[#3B82F6]/20 text-[#3B82F6] px-2 py-0.5 rounded-full">Classic</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Happy Hour & Nightlife */}
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <span className="text-lg mr-2">🍹</span>
+                  Happy Hour & Nightlife
+                </h5>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#10B981]/20 flex items-center justify-center mx-auto mb-2">
+                      <span className="text-xl">🌅</span>
+                    </div>
+                    <p className="text-xs font-medium text-primary mb-1">Duke's Waikiki</p>
+                    <p className="text-xs text-muted mb-2">Beachfront happy hour • Live music daily</p>
+                    <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">3-6 PM</span>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#3B82F6]/20 flex items-center justify-center mx-auto mb-2">
+                      <span className="text-xl">🎭</span>
+                    </div>
+                    <p className="text-xs font-medium text-primary mb-1">Blue Note Hawaii</p>
+                    <p className="text-xs text-muted mb-2">Jazz club • Intimate venue • Reservations</p>
+                    <span className="text-xs bg-[#3B82F6]/20 text-[#3B82F6] px-2 py-0.5 rounded-full">Shows Nightly</span>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#F59E0B]/20 flex items-center justify-center mx-auto mb-2">
+                      <span className="text-xl">🍺</span>
+                    </div>
+                    <p className="text-xs font-medium text-primary mb-1">Honolulu Beerworks</p>
+                    <p className="text-xs text-muted mb-2">Local craft beer • Food trucks on-site</p>
+                    <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">Local Brews</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Weekend Activities - Enhanced with more detailed options */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <span className="text-lg mr-2">🎯</span>
+              Weekend Adventures
+            </h4>
+            <div className="space-y-4">
+              {/* Water Activities */}
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <Waves className="w-4 h-4 mr-2" />
+                  Water Activities
+                </h5>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#10B981]/20 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl">🏄‍♂️</span>
+                    </div>
+                    <h6 className="text-sm font-medium text-primary mb-1">Surf Lessons</h6>
+                    <p className="text-xs text-muted mb-2">Waikiki Beach • 8 AM - 4 PM daily</p>
+                    <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">$75/lesson</span>
+                    <p className="text-xs text-muted mt-1">Group & private options</p>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#3B82F6]/20 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl">🤿</span>
+                    </div>
+                    <h6 className="text-sm font-medium text-primary mb-1">Snorkeling</h6>
+                    <p className="text-xs text-muted mb-2">Hanauma Bay • Advance booking required</p>
+                    <span className="text-xs bg-[#3B82F6]/20 text-[#3B82F6] px-2 py-0.5 rounded-full">$25 entry</span>
+                    <p className="text-xs text-muted mt-1">Best early morning</p>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#8B5CF6]/20 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl">🛥️</span>
+                    </div>
+                    <h6 className="text-sm font-medium text-primary mb-1">Boat Tours</h6>
+                    <p className="text-xs text-muted mb-2">Sunset sailing • Whale watching (winter)</p>
+                    <span className="text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">$65-120</span>
+                    <p className="text-xs text-muted mt-1">Includes drinks</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Land Activities */}
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <Mountain className="w-4 h-4 mr-2" />
+                  Land Adventures
+                </h5>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#F59E0B]/20 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl">🚁</span>
+                    </div>
+                    <h6 className="text-sm font-medium text-primary mb-1">Helicopter Tours</h6>
+                    <p className="text-xs text-muted mb-2">Island circle tours • Weather dependent</p>
+                    <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">$200-400</span>
+                    <p className="text-xs text-muted mt-1">Book 48hrs ahead</p>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#10B981]/20 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl">🥾</span>
+                    </div>
+                    <h6 className="text-sm font-medium text-primary mb-1">Hiking Trails</h6>
+                    <p className="text-xs text-muted mb-2">Diamond Head • Manoa Falls • Koko Crater</p>
+                    <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">Free</span>
+                    <p className="text-xs text-muted mt-1">Start early for parking</p>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-xl bg-[#8B5CF6]/20 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xl">🚴‍♂️</span>
+                    </div>
+                    <h6 className="text-sm font-medium text-primary mb-1">Bike Tours</h6>
+                    <p className="text-xs text-muted mb-2">Tantalus Drive • Beach path • E-bikes available</p>
+                    <span className="text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">$45-80</span>
+                    <p className="text-xs text-muted mt-1">Guided & self-guided</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cultural Activities */}
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <span className="text-lg mr-2">🎨</span>
+                  Arts & Culture
+                </h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#8B5CF6]/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-lg">🏛️</span>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-primary">Honolulu Museum of Art</p>
+                        <p className="text-xs text-muted">Asian & Western art • Beautiful gardens</p>
+                        <p className="text-xs text-muted">📍 Downtown • $20 • Tue-Sun 10 AM - 4 PM</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/20 flex items-center justify-center flex-shrink-0">
+                        <Music className="w-4 h-4 text-[#F59E0B]" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-primary">First Friday Art Walk</p>
+                        <p className="text-xs text-muted">Chinatown galleries • Street food • Live music</p>
+                        <p className="text-xs text-muted">📍 Chinatown • Free • First Fri 6-9 PM</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#10B981]/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-lg">🌺</span>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-primary">Polynesian Cultural Center</p>
+                        <p className="text-xs text-muted">Traditional villages • Luau shows</p>
+                        <p className="text-xs text-muted">📍 Laie • $80-200 • 12 PM - 9 PM</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#3B82F6]/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-lg">👑</span>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-primary">Iolani Palace</p>
+                        <p className="text-xs text-muted">Hawaiian royal history • Guided tours</p>
+                        <p className="text-xs text-muted">📍 Downtown • $27 • Tue-Sat tours</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Local Events Calendar - Enhanced with more detail */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Clock className="w-4 h-4 mr-2" />
+              This Weekend's Complete Schedule
+            </h4>
+            <div className="space-y-3">
+              <div className="glass rounded-xl p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-3">
+                    <div className="text-center min-w-[50px]">
+                      <div className="text-lg font-bold text-[#407B9E]">SAT</div>
+                      <div className="text-xs text-muted">Jun 29</div>
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="text-sm font-medium text-primary">KCC Farmers Market</h5>
+                      <p className="text-xs text-muted mt-1">7:30 AM - 11:00 AM • Kapiolani Community College</p>
+                      <p className="text-xs text-muted mt-1">Local produce, prepared foods, live music</p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">Free parking</span>
+                        <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">Cash preferred</span>
+                        <span className="text-xs bg-[#3B82F6]/20 text-[#3B82F6] px-2 py-0.5 rounded-full">Pet friendly</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-3">
+                    <div className="text-center min-w-[50px]">
+                      <div className="text-lg font-bold text-[#407B9E]">SAT</div>
+                      <div className="text-xs text-muted">Jun 29</div>
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="text-sm font-medium text-primary">Sunset on the Beach</h5>
+                      <p className="text-xs text-muted mt-1">6:00 PM - 9:00 PM • Queen's Surf Beach, Waikiki</p>
+                      <p className="text-xs text-muted mt-1">Free outdoor movie screening with local food vendors</p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <span className="text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">Free admission</span>
+                        <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">Bring blanket</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-3">
+                    <div className="text-center min-w-[50px]">
+                      <div className="text-lg font-bold text-[#407B9E]">SUN</div>
+                      <div className="text-xs text-muted">Jun 30</div>
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="text-sm font-medium text-primary">Honolulu Museum Art Walk</h5>
+                      <p className="text-xs text-muted mt-1">10:00 AM - 4:00 PM • Downtown Honolulu</p>
+                      <p className="text-xs text-muted mt-1">Gallery hopping, artist demos, family workshops</p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <span className="text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">Family friendly</span>
+                        <span className="text-xs bg-[#3B82F6]/20 text-[#3B82F6] px-2 py-0.5 rounded-full">$15 admission</span>
+                        <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">Parking $5</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-3">
+                    <div className="text-center min-w-[50px]">
+                      <div className="text-lg font-bold text-[#407B9E]">SUN</div>
+                      <div className="text-xs text-muted">Jun 30</div>
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="text-sm font-medium text-primary">Ukulele Festival</h5>
+                      <p className="text-xs text-muted mt-1">2:00 PM - 6:00 PM • Kapiolani Park Bandstand</p>
+                      <p className="text-xs text-muted mt-1">Local musicians, instrument sales, beginner lessons</p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <span className="text-xs bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded-full">Free event</span>
+                        <span className="text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">All ages</span>
+                        <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-0.5 rounded-full">Beach parking</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Hidden Gems - New section */}
+          <div>
+            <h4 className="text-sm font-medium text-secondary mb-4 flex items-center">
+              <Star className="w-4 h-4 mr-2" />
+              Local Hidden Gems
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <span className="text-lg mr-2">🌺</span>
+                  Secret Spots
+                </h5>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-xs font-medium">Shangri-La Museum</p>
+                      <p className="text-xs text-muted">Islamic art in beautiful villa • Advance booking</p>
+                    </div>
+                    <Heart className="w-3 h-3 text-[#EF4444] flex-shrink-0 mt-0.5" />
+                  </div>
+                  
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-xs font-medium">Byodo-In Temple</p>
+                      <p className="text-xs text-muted">Peaceful Japanese temple • Koi pond & gardens</p>
+                    </div>
+                    <Heart className="w-3 h-3 text-[#EF4444] flex-shrink-0 mt-0.5" />
+                  </div>
+                  
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-xs font-medium">Wahiawa Botanical Garden</p>
+                      <p className="text-xs text-muted">27 tropical acres • Cool mountain climate</p>
+                    </div>
+                    <Heart className="w-3 h-3 text-[#EF4444] flex-shrink-0 mt-0.5" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-xl p-4">
+                <h5 className="text-sm font-medium text-primary mb-3 flex items-center">
+                  <span className="text-lg mr-2">🏝️</span>
+                  Off the Beaten Path
+                </h5>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-xs font-medium">Lanikai Pillboxes</p>
+                      <p className="text-xs text-muted">Military bunkers with panoramic views • Easy hike</p>
+                    </div>
+                    <Heart className="w-3 h-3 text-[#EF4444] flex-shrink-0 mt-0.5" />
+                  </div>
+                  
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-xs font-medium">Bamboo Forest</p>
+                      <p className="text-xs text-muted">Instagram-worthy path • Along Manoa Falls trail</p>
+                    </div>
+                    <Heart className="w-3 h-3 text-[#EF4444] flex-shrink-0 mt-0.5" />
+                  </div>
+                  
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-xs font-medium">Ka'ena Point</p>
+                      <p className="text-xs text-muted">Westernmost point • Monk seals & albatross</p>
+                    </div>
+                    <Heart className="w-3 h-3 text-[#EF4444] flex-shrink-0 mt-0.5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ExpandableSection>
+
+      {/* Quick Actions Bar */}
+      <div className="tropical-card p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium text-secondary">Quick Links</h3>
+          <span className="text-xs text-muted">Tap to open</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+          <button 
+            className="flex items-center space-x-2 p-3 rounded-xl glass hover:bg-[#407B9E]/10 transition-colors group"
+            onClick={() => window.open('https://traffic.hawaii.gov/', '_blank')}
+          >
+            <Car className="w-4 h-4 text-[#DC2626]" />
+            <span className="text-sm font-medium text-primary">Live Traffic</span>
+            <ChevronRight className="w-3 h-3 text-muted group-hover:text-primary transition-colors" />
+          </button>
+          
+          <button 
+            className="flex items-center space-x-2 p-3 rounded-xl glass hover:bg-[#407B9E]/10 transition-colors group"
+            onClick={() => window.open('https://www.photoephemeris.com/', '_blank')}
+          >
+            <Sun className="w-4 h-4 text-[#F59E0B]" />
+            <span className="text-sm font-medium text-primary">Photo Times</span>
+            <ChevronRight className="w-3 h-3 text-muted group-hover:text-primary transition-colors" />
+          </button>
+          
+          <button 
+            className="flex items-center space-x-2 p-3 rounded-xl glass hover:bg-[#407B9E]/10 transition-colors group"
+            onClick={() => window.open('https://www.fandango.com/', '_blank')}
+          >
+            <Film className="w-4 h-4 text-[#9B59B6]" />
+            <span className="text-sm font-medium text-primary">Buy Tickets</span>
+            <ChevronRight className="w-3 h-3 text-muted group-hover:text-primary transition-colors" />
+          </button>
+          
+          <button 
+            className="flex items-center space-x-2 p-3 rounded-xl glass hover:bg-[#407B9E]/10 transition-colors group"
+            onClick={() => window.open('https://www.eventbrite.com/', '_blank')}
+          >
+            <Calendar className="w-4 h-4 text-[#FF9800]" />
+            <span className="text-sm font-medium text-primary">Find Events</span>
+            <ChevronRight className="w-3 h-3 text-muted group-hover:text-primary transition-colors" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

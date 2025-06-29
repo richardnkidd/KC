@@ -171,6 +171,21 @@ Changelog:
   - Updated glass effects for light theme with subtle shadows
   - Added dark mode support with dark gradient background
   - Removed text shadows for cleaner light theme appearance
+- June 29, 2025: Major layout restructure with priority mega-cards
+  - Created WeatherHubCard combining weather and rain radar data
+  - Implemented OceanConditionsCard with surf, tides, and beach safety features
+  - Added beach selector dropdown with 10 O'ahu beaches
+  - Created useOceanConditions hook with real-time data fetching
+  - Added ocean conditions API endpoint with Open-Meteo integration
+  - Applied CSS styling for beach safety indicators and wildlife sightings
+  - Restructured home page layout with two hero cards and expandable sections
+- June 29, 2025: Fixed WeatherHubCard bugs and enhanced expandable sections
+  - Fixed floating point precision issues in percentage calculations
+  - Moved 24-hour rain forecast to bottom of weather card for better space utilization
+  - Enhanced Island Life section with comprehensive surf conditions, essential services, and local tips
+  - Added detailed This Weekend section with dining guides, activities, arts & culture venues
+  - Implemented operational clarity with specific times, prices, locations, and booking requirements
+  - Added tradeoff analysis indicators for cost, difficulty, and time investment
 ```
 
 ## User Preferences
