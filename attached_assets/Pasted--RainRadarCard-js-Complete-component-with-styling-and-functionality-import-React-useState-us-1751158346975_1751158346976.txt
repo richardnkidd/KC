@@ -1,0 +1,401 @@
+// RainRadarCard.js - Complete component with styling and functionality
+import React, { useState, useEffect, useRef } from 'react';
+import './RainRadarCard.css';
+
+const RainRadarCard = ({ 
+  userLocation = { lat: 21.3099, lng: -157.8581, name: "Honolulu" },
+  apiKeys = {
+    openWeather: process.env.REACT_APP_OPENWEATHER_API_KEY,
+    nws: null // National Weather Service doesn't require API key
+  }
+}) => {
+  const [weatherData, setWeatherData] = useState(null);
+  const [radarData, setRadarData] = useState(null);
+  const [alerts, setAlerts] = useState([]);
+  const [vogLevels, setVogLevels] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState(userLocation.name);
+  
+  const radarRef = useRef(null);
+  const updateInterval = useRef(null);
+
+  // O'ahu neighborhood coordinates for micro-climate data
+  const oahuNeighborhoods = {
+    "Honolulu": { lat: 21.3099, lng: -157.8581 },
+    "Waikīkī": { lat: 21.2793, lng: -157.8293 },
+    "Mānoa": { lat: 21.3157, lng: -157.8025 },
+    "Kailua": { lat: 21.4022, lng: -157.7394 },
+    "North Shore": { lat: 21.6389, lng: -158.0001 },
+    "Windward": { lat: 21.4389, lng: -157.7623 },
+    "Leeward": { lat: 21.3467, lng: -158.0814 },
+    "Diamond Head": { lat: 21.2642, lng: -157.8073 },
+    "Pearl Harbor": { lat: 21.3644, lng: -157.9441 }
+  };
+
+  // Initialize component
+  useEffect(() => {
+    fetchAllWeatherData();
+    startAutoRefresh();
+    
+    return () => {
+      if (updateInterval.current) {
+        clearInterval(updateInterval.current);
+      }
+    };
+  }, [selectedNeighborhood]);
+
+  const startAutoRefresh = () => {
+    // Refresh data every 5 minutes
+    updateInterval.current = setInterval(() => {
+      fetchAllWeatherData();
+    }, 5 * 60 * 1000);
+  };
+
+  const fetchAllWeatherData = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      await Promise.all([
+        fetchCurrentWeather(),
+        fetchRadarData(),
+        fetchWeatherAlerts(),
+        fetchVogData()
+      ]);
+    } catch (err) {
+      setError('Failed to fetch weather data. Please try again.');
+      console.error('Weather data fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCurrentWeather = async () => {
+    const location = oahuNeighborhoods[selectedNeighborhood];
+    
+    try {
+      // Primary: OpenWeatherMap API
+      const weatherResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lng}&appid=${apiKeys.openWeather}&units=imperial`
+      );
+      
+      if (!weatherResponse.ok) throw new Error('Weather API failed');
+      
+      const weather = await weatherResponse.json();
+      
+      // Get detailed forecast
+      const forecastResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lng}&appid=${apiKeys.openWeather}&units=imperial`
+      );
+      
+      const forecast = forecastResponse.ok ? await forecastResponse.json() : null;
+      
+      setWeatherData({
+        current: {
+          temp: Math.round(weather.main.temp),
+          humidity: weather.main.humidity,
+          windSpeed: Math.round(weather.wind.speed),
+          windDirection: weather.wind.deg,
+          pressure: weather.main.pressure,
+          visibility: weather.visibility ? weather.visibility / 1000 : null,
+          precipitation: weather.rain?.['1h'] || weather.snow?.['1h'] || 0,
+          description: weather.weather[0].description,
+          icon: weather.weather[0].icon
+        },
+        forecast: forecast?.list?.slice(0, 8).map(item => ({
+          time: new Date(item.dt * 1000).toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            hour12: true 
+          }),
+          temp: Math.round(item.main.temp),
+          precipitation: Math.round((item.rain?.['3h'] || 0) * 100),
+          description: item.weather[0].description,
+          icon: item.weather[0].icon
+        })) || []
+      });
+      
+    } catch (error) {
+      console.error('Weather fetch error:', error);
+      // Fallback to NWS if OpenWeather fails
+      await fetchNWSData(location);
+    }
+  };
+
+  const fetchNWSData = async (location) => {
+    try {
+      // National Weather Service API (backup)
+      const gridResponse = await fetch(
+        `https://api.weather.gov/points/${location.lat},${location.lng}`
+      );
+      
+      if (gridResponse.ok) {
+        const gridData = await gridResponse.json();
+        const forecastResponse = await fetch(gridData.properties.forecast);
+        
+        if (forecastResponse.ok) {
+          const forecastData = await forecastResponse.json();
+          // Transform NWS data to match our format
+          setWeatherData({
+            current: {
+              temp: null, // NWS doesn't provide current temp in this endpoint
+              description: forecastData.properties.periods[0].shortForecast,
+              precipitation: 0 // Would need additional parsing
+            },
+            forecast: forecastData.properties.periods.slice(0, 4).map(period => ({
+              time: period.name,
+              temp: period.temperature,
+              description: period.shortForecast,
+              precipitation: 0
+            }))
+          });
+        }
+      }
+    } catch (error) {
+      console.error('NWS backup failed:', error);
+    }
+  };
+
+  const fetchRadarData = async () => {
+    try {
+      // Using NOAA radar data
+      const radarResponse = await fetch(
+        `https://radar.weather.gov/ridge/lite/N0R/OKX_loop.gif`
+      );
+      
+      if (radarResponse.ok) {
+        setRadarData({
+          imageUrl: radarResponse.url,
+          lastUpdated: new Date()
+        });
+      }
+    } catch (error) {
+      console.error('Radar fetch error:', error);
+    }
+  };
+
+  const fetchWeatherAlerts = async () => {
+    try {
+      // Hawaii weather alerts from NWS
+      const alertsResponse = await fetch(
+        'https://api.weather.gov/alerts?area=HI&status=actual'
+      );
+      
+      if (alertsResponse.ok) {
+        const alertsData = await alertsResponse.json();
+        const relevantAlerts = alertsData.features.filter(alert => 
+          alert.properties.description.toLowerCase().includes('oahu') ||
+          alert.properties.description.toLowerCase().includes('honolulu') ||
+          alert.properties.event.toLowerCase().includes('flood')
+        );
+        
+        setAlerts(relevantAlerts.map(alert => ({
+          type: alert.properties.event,
+          severity: alert.properties.severity,
+          description: alert.properties.description,
+          expires: new Date(alert.properties.expires)
+        })));
+      }
+    } catch (error) {
+      console.error('Alerts fetch error:', error);
+    }
+  };
+
+  const fetchVogData = async () => {
+    try {
+      // VOG data from USGS or local monitoring stations
+      // This would typically come from Hawaii air quality monitoring
+      const vogResponse = await fetch(
+        'https://airnow.gov/index.cfm?action=airnow.local_city&cityid=397&mapcenter=0'
+      );
+      
+      // For demo purposes, we'll simulate VOG data
+      // In production, you'd integrate with actual air quality APIs
+      setVogLevels({
+        aqi: Math.floor(Math.random() * 100) + 20,
+        level: 'Moderate',
+        recommendation: 'Sensitive individuals should limit outdoor activities'
+      });
+      
+    } catch (error) {
+      console.error('VOG fetch error:', error);
+    }
+  };
+
+  const getWindDirection = (degrees) => {
+    const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 
+                      'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    return directions[Math.round(degrees / 22.5) % 16];
+  };
+
+  const getAlertIcon = (severity) => {
+    switch(severity?.toLowerCase()) {
+      case 'severe': return '🚨';
+      case 'moderate': return '⚠️';
+      case 'minor': return '⚡';
+      default: return '📢';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="rain-radar-card loading">
+        <div className="card-header">
+          <h3>🌧️ Rain Radar & Micro-Climate</h3>
+        </div>
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading weather data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rain-radar-card error">
+        <div className="card-header">
+          <h3>🌧️ Rain Radar & Micro-Climate</h3>
+        </div>
+        <div className="error-message">
+          <p>{error}</p>
+          <button onClick={fetchAllWeatherData} className="retry-btn">
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rain-radar-card">
+      <div className="card-header">
+        <h3>🌧️ Rain Radar & Micro-Climate</h3>
+        <div className="location-selector">
+          <select 
+            value={selectedNeighborhood} 
+            onChange={(e) => setSelectedNeighborhood(e.target.value)}
+            className="neighborhood-select"
+          >
+            {Object.keys(oahuNeighborhoods).map(neighborhood => (
+              <option key={neighborhood} value={neighborhood}>
+                {neighborhood}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="card-content">
+        {/* Current Conditions */}
+        <div className="current-conditions">
+          <div className="main-weather">
+            <div className="temperature">
+              {weatherData?.current?.temp}°F
+            </div>
+            <div className="description">
+              {weatherData?.current?.description}
+            </div>
+          </div>
+          
+          <div className="weather-details">
+            <div className="detail-item">
+              <span className="label">💨 Wind:</span>
+              <span className="value">
+                {weatherData?.current?.windSpeed} mph {getWindDirection(weatherData?.current?.windDirection)}
+              </span>
+            </div>
+            <div className="detail-item">
+              <span className="label">💧 Humidity:</span>
+              <span className="value">{weatherData?.current?.humidity}%</span>
+            </div>
+            <div className="detail-item">
+              <span className="label">🌧️ Precipitation:</span>
+              <span className="value">{weatherData?.current?.precipitation}" / hr</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Alerts Section */}
+        {alerts.length > 0 && (
+          <div className="alerts-section">
+            <h4>⚠️ Active Alerts</h4>
+            {alerts.slice(0, 2).map((alert, index) => (
+              <div key={index} className={`alert alert-${alert.severity?.toLowerCase()}`}>
+                <span className="alert-icon">{getAlertIcon(alert.severity)}</span>
+                <div className="alert-content">
+                  <strong>{alert.type}</strong>
+                  <p>{alert.description.substring(0, 100)}...</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* VOG Levels */}
+        {vogLevels && (
+          <div className="vog-section">
+            <h4>🌋 VOG Levels</h4>
+            <div className="vog-indicator">
+              <div className="vog-level">
+                <span className="aqi-value">{vogLevels.aqi}</span>
+                <span className="aqi-label">AQI</span>
+              </div>
+              <div className="vog-info">
+                <div className="level">{vogLevels.level}</div>
+                <div className="recommendation">{vogLevels.recommendation}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Hourly Forecast */}
+        <div className="forecast-section">
+          <h4>📊 3-Hour Forecast</h4>
+          <div className="forecast-grid">
+            {weatherData?.forecast?.slice(0, 4).map((hour, index) => (
+              <div key={index} className="forecast-item">
+                <div className="forecast-time">{hour.time}</div>
+                <div className="forecast-temp">{hour.temp}°</div>
+                <div className="forecast-precip">{hour.precipitation}%</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="quick-actions">
+          <button 
+            className="action-btn radar-btn"
+            onClick={() => window.open('https://radar.weather.gov/', '_blank')}
+          >
+            📡 Full Radar
+          </button>
+          <button 
+            className="action-btn marine-btn"
+            onClick={() => window.open('https://www.ndbc.noaa.gov/station_page.php?station=51201', '_blank')}
+          >
+            🌊 Marine Forecast
+          </button>
+          <button 
+            className="action-btn refresh-btn"
+            onClick={fetchAllWeatherData}
+          >
+            🔄 Refresh
+          </button>
+        </div>
+
+        {/* Last Updated */}
+        <div className="last-updated">
+          Last updated: {new Date().toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit',
+            hour12: true 
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RainRadarCard;

@@ -68,7 +68,7 @@ export default function Home() {
         mutate('/api/surf?lat=21.276&lng=-157.822'),
         mutate('/api/sun'),
         mutate('/api/traffic'),
-        mutate((key) => typeof key === 'string' && key.startsWith('/api/rain-radar')),
+        mutate((key) => typeof key === 'string' && key.startsWith('/api/rain-radar')), // Refresh all rain radar data
       ]);
       setLastUpdated('Just now');
       toast({
@@ -114,7 +114,7 @@ export default function Home() {
                   Kamaʻāina Compass
                 </h1>
                 <p className="text-sm text-[#333333]/70 font-light hidden sm:block">
-                  O'ahu real-time |  "Makapuu to Makaha"
+                  Real-time island rhythms
                 </p>
               </div>
             </div>
@@ -154,40 +154,37 @@ export default function Home() {
               </button>
             </div>
           </div>
-          
-          {/* Optional: Navigation breadcrumbs for future expansion */}
-          {/* <nav className="hidden lg:flex items-center gap-6 text-sm pb-4 -mt-2">
-            <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Dashboard</a>
-            <span className="text-[#333333]/30">•</span>
-            <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Surf Report</a>
-            <span className="text-[#333333]/30">•</span>
-            <a href="#" className="text-[#333333]/60 hover:text-[#214263] transition-colors">Island Events</a>
-          </nav> */}
         </div>
       </header>
 
       {/* Main Dashboard */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative overflow-visible">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-0">
-          {/* Add color-coded card classes */}
+          {/* Core Weather Cards */}
           <div className="tropical-card weather-card animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <WeatherCard />
           </div>
           <div className="tropical-card rain-radar-card animate-fade-in" style={{ animationDelay: '0.12s' }}>
             <RainRadarCard />
           </div>
+          
+          {/* Ocean & Surf Cards */}
           <div className="tropical-card surf-card animate-fade-in" style={{ animationDelay: '0.15s' }}>
             <SurfCard />
           </div>
           <div className="tropical-card tide-card animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <TideCard />
           </div>
+          
+          {/* Celestial & Transportation */}
           <div className="tropical-card sun-card animate-fade-in" style={{ animationDelay: '0.25s' }}>
             <SunCard />
           </div>
           <div className="tropical-card traffic-card animate-fade-in" style={{ animationDelay: '0.35s' }}>
             <TrafficCard />
           </div>
+          
+          {/* Entertainment */}
           <div className="tropical-card movies-card animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <MoviesCard />
           </div>

@@ -1,0 +1,299 @@
+import React, { useState, useEffect } from 'react';
+import { Cloud, CloudRain, MapPin, ChevronDown, AlertTriangle, Activity, Eye, Wind, Droplets } from 'lucide-react';
+import { useRainRadar } from '../hooks/useRainRadar';
+import { cn } from '@/lib/utils';
+
+// O'ahu neighborhood coordinates for micro-climate data
+const OAHU_NEIGHBORHOODS = {
+  "Honolulu": { lat: 21.3099, lng: -157.8581, region: "Urban Core" },
+  "Waikīkī": { lat: 21.2793, lng: -157.8293, region: "Town" },
+  "Mānoa": { lat: 21.3157, lng: -157.8025, region: "Valley" },
+  "Kailua": { lat: 21.4022, lng: -157.7394, region: "Windward" },
+  "Haleʻiwa": { lat: 21.5933, lng: -158.1039, region: "North Shore" },
+  "Kāneʻohe": { lat: 21.4389, lng: -157.7623, region: "Windward" },
+  "Pearl City": { lat: 21.3972, lng: -157.9736, region: "Leeward" },
+  "Diamond Head": { lat: 21.2642, lng: -157.8073, region: "Town" },
+  "Makaha": { lat: 21.4692, lng: -158.2208, region: "Leeward Coast" },
+  "Koko Head": { lat: 21.2777, lng: -157.6877, region: "Southeast" }
+} as const;
+
+export const RainRadarCard: React.FC = () => {
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState('Honolulu');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
+  const { data: radarData, isLoading, error } = useRainRadar(selectedNeighborhood);
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <div className="w-16 h-16 rounded-2xl bg-[#8B2323]/10 flex items-center justify-center mx-auto mb-4">
+          <CloudRain className="w-8 h-8 text-[#8B2323]" />
+        </div>
+        <p className="text-base font-medium text-primary">Rain Radar Unavailable</p>
+        <p className="text-sm text-muted mt-1">Unable to fetch precipitation data</p>
+      </div>
+    );
+  }
+
+  if (isLoading || !radarData) {
+    return (
+      <div className="animate-pulse">
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="w-12 h-12 bg-[#2D2D2B]/30 rounded-2xl"></div>
+          <div className="space-y-2">
+            <div className="h-5 bg-[#2D2D2B]/30 rounded-xl w-32"></div>
+            <div className="h-4 bg-[#2D2D2B]/20 rounded-xl w-24"></div>
+          </div>
+        </div>
+        <div className="space-y-3">
+          <div className="h-20 bg-[#2D2D2B]/30 rounded-2xl"></div>
+          <div className="h-16 bg-[#2D2D2B]/30 rounded-2xl"></div>
+        </div>
+      </div>
+    );
+  }
+
+  const getCurrentCondition = () => {
+    const precip = radarData.current.precipitation;
+    if (precip === 0) return { text: 'Clear', color: 'text-[#10B981]', icon: '☀️' };
+    if (precip < 0.1) return { text: 'Light Rain', color: 'text-[#3B82F6]', icon: '🌦️' };
+    if (precip < 0.5) return { text: 'Moderate Rain', color: 'text-[#F59E0B]', icon: '🌧️' };
+    return { text: 'Heavy Rain', color: 'text-[#EF4444]', icon: '⛈️' };
+  };
+
+  const getWindDirection = (degrees: number) => {
+    const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 
+                      'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    return directions[Math.round(degrees / 22.5) % 16];
+  };
+
+  const getVogLevel = (aqi: number) => {
+    if (aqi <= 50) return { level: 'Good', color: 'text-[#10B981]', bg: 'bg-[#10B981]/20' };
+    if (aqi <= 100) return { level: 'Moderate', color: 'text-[#F59E0B]', bg: 'bg-[#F59E0B]/20' };
+    if (aqi <= 150) return { level: 'Unhealthy for Sensitive', color: 'text-[#EF4444]', bg: 'bg-[#EF4444]/20' };
+    return { level: 'Unhealthy', color: 'text-[#8B2323]', bg: 'bg-[#8B2323]/20' };
+  };
+
+  const condition = getCurrentCondition();
+  const vogStatus = getVogLevel(radarData.vog.aqi);
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-4">
+          <div className="relative animate-float">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#667eea] to-[#764ba2]"></div>
+              <CloudRain className="w-6 h-6 text-white relative z-10" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <h2 className="text-h2 font-display text-emphasis-high">Rain Radar</h2>
+            
+            {/* Neighborhood Selector */}
+            <div className="relative mt-1">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 text-small text-emphasis-medium hover:text-emphasis-high transition-colors group"
+              >
+                <MapPin className="w-3 h-3" />
+                <span>{selectedNeighborhood}</span>
+                <ChevronDown className={cn(
+                  "w-3 h-3 transition-transform",
+                  isDropdownOpen && "rotate-180"
+                )} />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setIsDropdownOpen(false)}
+                  />
+                  <div className="absolute top-full mt-2 w-64 bg-white rounded-2xl shadow-lg border border-[rgba(0,0,0,0.06)] overflow-hidden z-50">
+                    <div className="max-h-64 overflow-y-auto">
+                      {Object.entries(
+                        Object.entries(OAHU_NEIGHBORHOODS).reduce((acc, [name, info]) => {
+                          if (!acc[info.region]) acc[info.region] = [];
+                          acc[info.region].push(name);
+                          return acc;
+                        }, {} as Record<string, string[]>)
+                      ).map(([region, neighborhoods]) => (
+                        <div key={region}>
+                          <div className="px-4 py-2 text-xs font-medium text-[#333333]/50 bg-[#F5FAF8]">
+                            {region}
+                          </div>
+                          {neighborhoods.map((neighborhood) => (
+                            <button
+                              key={neighborhood}
+                              onClick={() => {
+                                setSelectedNeighborhood(neighborhood);
+                                setIsDropdownOpen(false);
+                              }}
+                              className={cn(
+                                "w-full text-left px-4 py-2 text-sm hover:bg-[#F5FAF8] transition-colors",
+                                selectedNeighborhood === neighborhood && "bg-[#EEE0C9]/30 text-[#214263] font-medium"
+                              )}
+                            >
+                              {neighborhood}
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="text-right">
+          <p className="text-caption text-emphasis-low">Current</p>
+          <p className={cn("text-body font-semibold", condition.color)}>{condition.text}</p>
+        </div>
+      </div>
+
+      {/* Current Precipitation */}
+      <div className="glass rounded-2xl p-4 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <span className="text-2xl">{condition.icon}</span>
+            <div>
+              <p className="text-base font-medium text-primary">Precipitation</p>
+              <p className="text-sm text-muted">{radarData.current.precipitation}" per hour</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-light text-primary">{radarData.current.precipitation}"</p>
+            <p className="text-xs text-muted">/ hour</p>
+          </div>
+        </div>
+
+        {/* Conditions Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="glass rounded-xl p-3">
+            <div className="flex items-center space-x-2 mb-1">
+              <Eye className="w-4 h-4 text-[#407B9E]" />
+              <p className="text-caption text-emphasis-low">Visibility</p>
+            </div>
+            <p className="text-body font-medium text-emphasis-high">{radarData.current.visibility} mi</p>
+          </div>
+          <div className="glass rounded-xl p-3">
+            <div className="flex items-center space-x-2 mb-1">
+              <Wind className="w-4 h-4 text-[#407B9E]" />
+              <p className="text-caption text-emphasis-low">Trade Winds</p>
+            </div>
+            <p className="text-body font-medium text-emphasis-high">
+              {radarData.current.windSpeed}mph {getWindDirection(radarData.current.windDirection)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Alerts Section */}
+      {radarData.alerts.length > 0 && (
+        <div className="glass rounded-2xl p-4 mb-6 border-l-4 border-[#F59E0B]">
+          <h3 className="text-sm font-medium text-secondary mb-3 flex items-center">
+            <AlertTriangle className="w-4 h-4 mr-2 text-[#F59E0B]" />
+            Weather Alerts
+          </h3>
+          {radarData.alerts.slice(0, 2).map((alert, index) => (
+            <div key={index} className="flex items-start space-x-3 mb-3 last:mb-0">
+              <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/20 flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 text-[#F59E0B]" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-primary">{alert.type}</p>
+                <p className="text-xs text-muted mt-1">{alert.description}</p>
+                <p className="text-xs text-muted mt-1">
+                  Until {new Date(alert.expires).toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                  })}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* VOG Levels */}
+      <div className="glass rounded-2xl p-4 mb-6">
+        <h3 className="text-sm font-medium text-secondary mb-3 flex items-center">
+          🌋 VOG Levels
+        </h3>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className={cn(
+              "w-12 h-12 rounded-xl flex flex-col items-center justify-center",
+              vogStatus.bg
+            )}>
+              <span className={cn("text-lg font-bold", vogStatus.color)}>{radarData.vog.aqi}</span>
+              <span className="text-xs text-muted">AQI</span>
+            </div>
+            <div>
+              <p className={cn("text-sm font-medium", vogStatus.color)}>{vogStatus.level}</p>
+              <p className="text-xs text-muted">{radarData.vog.recommendation}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-muted">Kīlauea Status</p>
+            <p className="text-sm font-medium text-primary">{radarData.vog.volcanoStatus}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Hourly Forecast */}
+      <div className="glass rounded-2xl p-4 mb-6">
+        <h3 className="text-sm font-medium text-secondary mb-4 flex items-center">
+          <Droplets className="w-4 h-4 mr-2" />
+          Next 6 Hours
+        </h3>
+        <div className="grid grid-cols-6 gap-2">
+          {radarData.hourly.slice(0, 6).map((hour, index) => (
+            <div key={index} className="text-center">
+              <p className="text-xs text-muted mb-2">{hour.time}</p>
+              <div className="w-6 h-6 mx-auto mb-2 flex items-center justify-center">
+                {hour.precipitation > 0.1 ? (
+                  <CloudRain className="w-4 h-4 text-[#3B82F6]" />
+                ) : (
+                  <Cloud className="w-4 h-4 text-[#6B7280]" />
+                )}
+              </div>
+              <p className="text-xs font-medium text-primary">{hour.precipitation}"</p>
+              <p className="text-xs text-muted">{Math.round(hour.chanceOfRain)}%</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="flex space-x-2 mb-4">
+        <button 
+          className="flex-1 glass rounded-xl px-3 py-2 text-xs font-medium text-primary hover:bg-[#407B9E]/10 transition-colors"
+          onClick={() => window.open('https://radar.weather.gov/', '_blank')}
+        >
+          📡 Full Radar
+        </button>
+        <button 
+          className="flex-1 glass rounded-xl px-3 py-2 text-xs font-medium text-primary hover:bg-[#407B9E]/10 transition-colors"
+          onClick={() => window.open('https://www.nhc.noaa.gov/', '_blank')}
+        >
+          🌊 Marine Forecast
+        </button>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-6 pt-4 border-t border-[rgb(var(--tropical-sage)/0.2)]">
+        <p className="text-xs text-muted flex items-center">
+          <Activity className="w-3 h-3 mr-2" />
+          Updates every 5 minutes • Micro-climate data
+        </p>
+      </div>
+    </div>
+  );
+};

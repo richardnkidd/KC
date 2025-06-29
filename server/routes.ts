@@ -7,6 +7,7 @@ import { getMoviesData } from "./services/moviesService";
 import { getEventsData } from "./services/eventsService";
 import { getSunData } from "./services/sunService";
 import { getTrafficData } from "./services/trafficService";
+import { getRainRadarData } from "./services/rainRadarService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Add proper MIME type handling for JS modules
@@ -142,6 +143,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Surf API error:', error);
       res.status(500).json({ 
         error: 'Failed to fetch surf data',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Rain Radar endpoint
+  app.get("/api/rain-radar", async (req, res) => {
+    try {
+      const location = req.query.location as string || 'Honolulu';
+      const radarData = await getRainRadarData(location);
+      res.json(radarData);
+    } catch (error) {
+      console.error('Rain Radar API error:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch rain radar data',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

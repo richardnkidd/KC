@@ -30,6 +30,8 @@
   --accent-events-end: 255, 87, 34;         /* #FF5722 - Deep orange */
   --accent-traffic-start: 220, 38, 38;      /* #DC2626 - Red */
   --accent-traffic-end: 245, 158, 11;       /* #F59E0B - Amber */
+  --accent-rain-start: 103, 110, 234;       /* #676EEA - Purple blue */
+  --accent-rain-end: 118, 75, 162;          /* #764BA2 - Deep purple */
 
   /* Status Colors */
   --status-excellent: 16, 185, 129;         /* #10B981 - Emerald */
@@ -504,6 +506,12 @@
     background: 
       linear-gradient(white, white) padding-box,
       linear-gradient(135deg, rgb(var(--accent-traffic-start)) 0%, rgb(var(--accent-traffic-end)) 100%) border-box !important;
+  }
+
+  .rain-radar-card {
+    background: 
+      linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, rgb(var(--accent-rain-start)) 0%, rgb(var(--accent-rain-end)) 100%) border-box !important;
   }
 
   /* Card Sections with Breathing Room */

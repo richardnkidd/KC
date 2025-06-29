@@ -38,9 +38,13 @@ Kamaʻāina Compass is a React-based web application that provides real-time inf
 
 ### Frontend Components
 - **WeatherCard**: Displays current weather and 3-day forecast
+- **RainRadarCard**: Shows precipitation, micro-climate data, VOG levels, and weather alerts by neighborhood
 - **TideCard**: Shows current tide status and upcoming tide times
 - **MoviesCard**: Lists movie showtimes at local theaters
 - **EventsCard**: Displays upcoming local events with pricing
+- **TrafficCard**: Real-time commute times for major O'ahu routes
+- **SunCard**: Sunrise, sunset, golden hour, and blue hour times
+- **SurfCard**: Live wave conditions for popular surf spots
 
 ### UI Features
 - **Responsive Design**: Mobile-first approach with desktop optimization

@@ -1,0 +1,168 @@
+/* Add this to your existing index.css file in the :root section */
+
+:root {
+  /* ... existing variables ... */
+  
+  /* Rain Radar Card Accent Colors */
+  --accent-rain-start: 103, 110, 234;    /* #676AEA - Purple blue */
+  --accent-rain-end: 118, 75, 162;       /* #764BA2 - Deep purple */
+}
+
+/* Add this to the @layer components section */
+
+@layer components {
+  /* ... existing component styles ... */
+
+  /* Rain Radar Card Specific Styling */
+  .rain-radar-card {
+    background: 
+      linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, rgb(var(--accent-rain-start)) 0%, rgb(var(--accent-rain-end)) 100%) border-box !important;
+  }
+
+  /* Enhanced rain radar specific elements */
+  .rain-radar-card .glass {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(103, 110, 234, 0.1) !important;
+  }
+
+  .rain-radar-card .glass:hover {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(103, 110, 234, 0.2) !important;
+  }
+
+  /* Precipitation level indicators */
+  .precip-none { 
+    color: #10B981; 
+    background: rgba(16, 185, 129, 0.1);
+  }
+  
+  .precip-light { 
+    color: #3B82F6; 
+    background: rgba(59, 130, 246, 0.1);
+  }
+  
+  .precip-moderate { 
+    color: #F59E0B; 
+    background: rgba(245, 158, 11, 0.1);
+  }
+  
+  .precip-heavy { 
+    color: #EF4444; 
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  /* VOG level color coding */
+  .vog-good { 
+    color: #10B981; 
+    background: rgba(16, 185, 129, 0.15);
+  }
+  
+  .vog-moderate { 
+    color: #F59E0B; 
+    background: rgba(245, 158, 11, 0.15);
+  }
+  
+  .vog-unhealthy-sensitive { 
+    color: #EF4444; 
+    background: rgba(239, 68, 68, 0.15);
+  }
+  
+  .vog-unhealthy { 
+    color: #8B2323; 
+    background: rgba(139, 35, 35, 0.15);
+  }
+
+  /* Neighborhood dropdown enhancements */
+  .rain-radar-card .neighborhood-dropdown {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(103, 110, 234, 0.1);
+    box-shadow: 0 8px 32px rgba(103, 110, 234, 0.15);
+  }
+
+  /* Alert styling for rain radar */
+  .rain-radar-card .alert-flash-flood {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+    border-left: 4px solid #F59E0B;
+  }
+
+  .rain-radar-card .alert-high-surf {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+    border-left: 4px solid #3B82F6;
+  }
+
+  /* Hourly forecast grid */
+  .rain-radar-card .hourly-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+    padding: 1rem 0;
+  }
+
+  .rain-radar-card .hourly-item {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.6);
+    transition: all 0.2s ease;
+  }
+
+  .rain-radar-card .hourly-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+  }
+
+  /* Wind direction indicator */
+  .rain-radar-card .wind-direction {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  /* Quick action buttons */
+  .rain-radar-card .quick-action {
+    background: rgba(103, 110, 234, 0.08);
+    border: 1px solid rgba(103, 110, 234, 0.15);
+    color: rgb(var(--accent-rain-end));
+    transition: all 0.3s ease;
+  }
+
+  .rain-radar-card .quick-action:hover {
+    background: rgba(103, 110, 234, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(103, 110, 234, 0.2);
+  }
+
+  /* Mobile optimizations for rain radar */
+  @media (max-width: 768px) {
+    .rain-radar-card .hourly-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.375rem;
+    }
+
+    .rain-radar-card .conditions-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .rain-radar-card .glass {
+      padding: 0.75rem !important;
+    }
+  }
+
+  /* Dark mode adjustments for rain radar */
+  .dark .rain-radar-card .glass {
+    background: rgba(var(--tropical-stone), 0.8) !important;
+    border-color: rgba(103, 110, 234, 0.2) !important;
+  }
+
+  .dark .rain-radar-card .neighborhood-dropdown {
+    background: rgba(var(--tropical-stone), 0.95);
+    border-color: rgba(103, 110, 234, 0.2);
+  }
+}
